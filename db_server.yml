@@ -1,0 +1,12 @@
+---
+- hosts: db_servers
+  become: yes
+  become_user: root
+
+  vars:
+    server_type: db_server
+  roles:
+  - os_common
+  - db_server
+  - web_server
+  - summary

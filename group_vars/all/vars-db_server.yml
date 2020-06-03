@@ -1,0 +1,21 @@
+---
+### Iris Database Server specific variables ###
+
+# Setup variables for HealthShare silent install (./install_silent) for Database Server
+IRIS_PACKAGE_INSTANCENAME: "{{ iris_instance }}"
+IRIS_PACKAGE_INSTALLDIR: "{{ iris_install_target_path }}"
+IRIS_PACKAGE_UNICODE: Y
+IRIS_PACKAGE_INITIAL_SECURITY: Normal
+IRIS_PACKAGE_MGRGROUP: "{{ os_irismgrgrp }}"
+IRIS_PACKAGE_MGRUSER: "{{ os_irismgrusr }}"
+IRIS_PACKAGE_IRISGROUP: "{{ os_irisgrp }}"
+IRIS_PACKAGE_IRISUSER: "{{ os_irisusr }}"
+IRIS_PACKAGE_USER_PASSWORD: "{{ smp_passwd }}"
+IRIS_PACKAGE_CSP_CONFIGURE: Y
+IRIS_PACKAGE_CSP_SERVERTYPE: Apache
+IRIS_PACKAGE_CSP_APACHE_CONF: "{{ apache_conf_filename }}"
+IRIS_PACKAGE_CSP_GATEWAY_DIR: "{{ webgateway_opt_path }}"
+IRIS_PACKAGE_STARTIRIS: Y
+IRIS_INSTALLER_LOGFILE: installer_log
+IRIS_INSTALLER_LOGLEVEL: 3
+IRIS_INSTALLER_PARAMETERS: "RUNINSTALLER={{ run_installer }},OSADMINUSER={{ os_adminuser }},OSSUDOUSER={{ os_sudouser }},OSBACKUPUSER={{ os_irisbackupusr }},HUGEPAGES={{ db_huge_pages_GB }},SSPORT={{ iris_superserver_port }},WSPORT={{ iris_webserver_port }},JRNPRIDIR={{ iris_jrnpri_path }},JRNALTDIR={{ iris_jrnalt_path }},WIJDIR={{ iris_wij_path }},TRAKNS={{ tc_nspace }},TRAKDIRTC={{ path_to_trak_tc }},TRAKDIRDB={{ path_to_trak_db }},DBEXPSIZE={{ iris_db_expansionsizeMB }},INSTALLDIR={{ path_to_install }}"

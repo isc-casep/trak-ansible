@@ -1,0 +1,46 @@
+---
+### Perform tuning for Iris instance ###
+### Filename:   /roles/db_server/tasks/tuning-iris.yml
+### Author:     Carlos Sepulveda
+
+- debug: msg="Start tuning for Iris"
+
+- name: Tuning for Iris
+  shell :
+    echo -e "superuser\n"{{ smp_passwd }}"\n
+    s prop(\"AutheEnabled\")=1136\n
+    s Status=##Class(Security.System).Modify(\"AutheEnabled\",.prop)\n
+    s prop(\"AutheEnabled\")=64\n
+    s Status=##Class(Security.Services).Modify(\"%Service_CacheDirect\", .prop)\n
+    s prop(\"AutheEnabled\")=48\n
+    s Status=##Class(Security.Services).Modify(\"%Service_Terminal\", .prop)\n
+    s prop(\"AutheEnabled\")=32\n
+    s Status=##Class(Security.Services).Modify(\"%Service_WebGateway\", .prop)\n
+    s Status=##Class(Config.Startup).Get(.Props)\n
+    s Props(\"DBSizesAllowed\")=\""{{ iris_DBSizesAllowed }}"\"\n
+    s Props(\"TerminalPrompt\")=\"8,3,2\"\n
+    s Status=##Class(Config.Startup).Modify(.Props)\n
+    s Status=##Class(Config.config).Get(.Props)\n
+    s Props(\"routines\")=\""{{ iris_routines }}"\"\n
+    s Props(\"globals8kb\")="{{ iris_globals8kb }}"\n
+    s Props(\"globals64kb\")="{{ iris_globals64kb }}"\n
+    s Props(\"gmheap\")="{{ iris_gmheap }}"\n
+    s Props(\"locksiz\")="{{ iris_locksiz }}"\n
+    s Props(\"errlog\")=10000\n
+    s Status=##Class(Config.config).Modify(.Props)\n
+    s Status=##Class(Config.Journal).Get(.Props)\n
+    s Props(\"CurrentDirectory\")=\""{{ path_to_trak_jrnpri }}"\"\n
+    s Props(\"AlternateDirectory\")=\""{{ path_to_trak_jrnalt }}"\"\n
+    s Props(\"FreezeOnError\")=1\n
+    s Props(\"JournalFilePrefix\")=\""{{ tc_site }}"\"\n
+    s Status=##Class(Config.Journal).Modify(.Props)\n
+    s Status=##Class(Config.SQL).Get(.Props)\n
+    s Props(\"QueryProcedures\")=1\n
+    s Props(\"FastDistinct\")=0\n
+    s Props(\"LockThreshold\")=10000\n
+    s Status=##Class(Config.SQL).Modify(.Props)\n
+    s Status=##Class(Config.Miscellaneous).Get(.Props)\n
+    s Props(\"ShutDownLogErrors\")=1\n
+    s Status=##Class(Config.Miscellaneous).Modify(.Props)\n
+    s ^%SYS(\"SystemMode\")=\""{{ iris_type_server }}"\"\n
+    h\n"|runuser -l "{{ os_irismgrusr }}" -c "iris session "{{ iris_instance }}" -U %SYS"

@@ -1,0 +1,108 @@
+---
+### Main Task:  OS Install Apache Web Server ###
+### Filename:   /roles/web_server/tasks/main.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+### Wondering if most fo this is still required, haven't senn anything
+### other than apache web server 2.4 lately...
+
+- debug: msg="Start os_apache"
+
+# Include Apache variables
+- name: include Red Hat apache variables
+  include_vars: vars-RedHat-Apache.yml
+  when: ansible_os_family == "RedHat"
+
+# Include Apache MPM variables
+- name: include apache mpm variables
+  include_vars: vars-mpm.yml
+
+# Install Apache
+- include: install-RedHat-Apache.yml
+  when: ansible_os_family == "RedHat"
+
+# Figure out what version of Apache is installed.
+- name: get installed version of apache
+  shell: "{{ apache_daemon_path }}{{ apache_daemon }} -v"
+  changed_when: false
+  register: _apache_version
+
+- debug: msg="Apache version {{ _apache_version }}"
+
+- name: define apache_packages
+  set_fact:
+    apache_packages: "{{ apache_packages | list }}"
+  when: apache_packages is not defined
+
+- name: create apache_version variable
+  set_fact:
+    apache_version: "{{ _apache_version.stdout.split()[2].split('/')[1] }}"
+
+- include_vars: vars-Apache-24.yml
+  when: "apache_version.split('.')[1] == '4'"
+
+# Configure Apache.
+- include: configure-RedHat-Apache.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: template Apache conf file out to web server
+  template:
+    src: "{{ apache_conf_template }}"
+    dest: "{{ apache_conf_nspace_filename }}"
+
+# Create target directory for trakcare db directory
+- name: create db directory
+  file:
+    path: "{{ path_to_trak_web }}"
+    mode: "{{ tc_directory_mode }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    state: directory
+
+# Set ownership and permissions recursively to TrakCare database directory and files.
+- name: set TrakCare database directories owner and permissions
+  file:
+    path: "{{ path_to_trak_web }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory
+    recurse: yes
+
+# Check if Web Gateway is installed
+- name: check if CSP.ini file exists
+  stat: path="{{ webgateway_opt_path }}/bin/CSP.ini"
+  register: csp_ini
+- debug: msg="File {{ webgateway_opt_path }}/bin/CSP.ini"
+
+# Deploy Web Gateway.
+- include: deploy-webgateway.yml
+  when: csp_ini.stat.exists == false
+
+# Check if Web Gateway is configured
+- name: check whether CSP.ini is already configured
+  shell: grep -Fxq 'System_Manager=*.*.*.*' "{{ webgateway_opt_path }}/bin/CSP.ini"
+  register: cspset
+  failed_when: cspset.rc != 1 and cspset.rc != 0
+
+- name: ensure apache has selected state and enabled on boot
+  systemd:
+    name: "{{ apache_service }}"
+    enabled: yes
+    state: started
+    masked: no
+
+- name: CSP Already set?
+  debug: msg="CSP set"
+  when: cspset.rc == 0
+
+# Hack the webgateway
+- include: hack-webgateway.yml
+  when: cspset.rc == 1
+
+# Configure NFS servers
+- include: configure-nfs-web.yml
+  when: os_setup_nfs
+
+# Configure SELinux
+- include: configure-SELinux-wg.yml

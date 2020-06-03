@@ -1,0 +1,60 @@
+---
+### Download all files for dbserver install ###
+### Filename:   /roles/db_server/tasks/download-install-db.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+# Download Iris install kit from repository
+- name: download Iris kit to install directory
+  get_url:
+    url: "{{ url_to_kits }}/{{ hs_install_kit_filename }}"
+    dest: "{{ path_to_install }}"
+    group: "{{ os_sudogroup }}"
+    owner: "{{ os_sudouser }}"
+
+# Download Iris cache.key
+- name: download Iris iris.key to install directory
+  get_url:
+    url: "{{ url_to_package }}/iris.key"
+    dest: "{{ path_to_install }}"
+    group: "{{ os_sudogroup }}"
+    owner: "{{ os_sudouser }}"
+
+# Download db files from repository
+- name: download TrakCare db files to install directory
+  get_url:
+    url: "{{ url_to_package }}/{{ tc_dbkit_filename }}"
+    dest: "{{ path_to_install }}"
+    group: "{{ os_sudogroup }}"
+    owner: "{{ os_sudouser }}"
+
+# Download PerfTools utility
+- name: download PerfTools RandRead utility
+  get_url:
+    url: "{{ url_to_package }}/PerfTools.RanRead.xml"
+    dest: "{{ path_to_install }}"
+    group: "{{ os_sudogroup }}"
+    owner: "{{ os_sudouser }}"
+
+# Create Iris install kit directory
+- name: create Iris install kit directory
+  file:
+    path: "{{ hs_install_kit_path }}"
+    group: "{{ os_sudogroup }}"
+    owner: "{{ os_sudouser }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory
+
+# Unarchive Iris install kit to target install directory
+- name: unarchive Iris install kit
+  unarchive:
+    src: "{{ path_to_install}}/{{ hs_install_kit_filename }}"
+    dest: "{{ hs_install_kit_path }}"
+    remote_src: yes
+    creates: "{{ hs_install_kit_path }}/cinstall"
+
+# Copy %Installer class to db server install directory
+- name: copy %Installer class to db server
+  template:
+    src: "{{ playbook_dir }}/roles/tc_dbserver/files/{{ hs_installer_filename }}"
+    dest: "{{ hs_install_kit_path }}"

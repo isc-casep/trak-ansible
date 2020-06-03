@@ -1,0 +1,10 @@
+---
+### Install Apache on Red Hat ###
+### Filename:   /roles/web_server/tasks/install-RedHat-Apache.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- name: install package apache
+  yum:
+    name: "{{ apache_service }}"
+    state: present

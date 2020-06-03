@@ -1,0 +1,18 @@
+## Transfer TrakCare installer
+### Filename:   /roles/db_server/tasks/transfer-trakcare-installer.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- name: Ensure TrakCare destination folder directory exists
+  file:
+    path: "{{ path_to_install }}/tkinstaller"
+    state: directory
+
+- name: Extract the TrakCare installer
+  unarchive:
+    src: "/opt/installers/{{ trak_installer_filename }}"
+    dest: "{{ path_to_install }}/tkinstaller"
+    creates: "{{ path_to_install }}/tkinstaller/tkutils.xml"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irisusr }}"
+    mode: 0775

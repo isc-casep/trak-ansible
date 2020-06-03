@@ -1,0 +1,68 @@
+---
+### Standard Default Variables ###
+### The variables defined here are less likely needed to be modified
+
+# Operating System Variables for database server
+os_swappiness: 5
+os_dirty_background_ratio: 5
+os_dirty_ratio: 10
+os_huge_page_size_KB: 2048
+
+# Iris OS users and groups
+os_irisgrp: irisgrp
+os_irisusr: irisusr
+os_irismgrgrp: irismgr
+os_irismgrusr: irissys
+
+# Credentials
+smp_passwd: trakcare
+
+# OS username for Iris backups
+os_irisbackupusr: irisbackup
+
+# Default variables that will be updated dynamically in runtime
+iris_instance: iris
+tc_nspace: trak
+
+# Define Iris instance name defaults
+iris_instance_tc: "{{ tc_site }}{{ tc_env }}tc"
+iris_instance_int: "{{ tc_site }}{{ tc_env }}int"
+iris_instance_prt: "{{ tc_site }}{{ tc_env }}prt"
+
+# Iris instance target directory
+iris_install_target_path: "{{ path_to_trak_iris }}/{{ iris_instance }}"
+
+# Iris journal directories
+iris_jrnpri_path: "{{ path_to_trak_jrnpri }}/{{ iris_instance }}"
+iris_jrnalt_path: "{{ path_to_trak_jrnalt }}/{{ iris_instance }}"
+iris_wij_path: "{{ path_to_trak_wij }}/{{ iris_instance }}"
+
+# Database property variables
+iris_db_expansionsizeMB: 1000
+iris_globals8kb: 1024
+iris_globals64kb: 64
+iris_gmheap: 1048576
+iris_locksiz: 128057344
+iris_routines: 0,128,0,128,0,768
+iris_DBSizesAllowed: 8192,65536
+iris_type_server: DEVELOPMENT
+
+# RedHat Apache Iris conf file
+apache_conf_filename: /etc/httpd/conf.d/ztrak.conf
+apache_conf_nspace_filename: /etc/httpd/conf.d/ztrak_nspace.conf
+apache_conf_template: template_tc_nspace_alias.conf
+
+
+# CSP Gateway
+webgateway_opt_path: /opt/webgateway
+cspgateway_csp_path: /usr/irissys
+cspgateway_dbserver: TRAKDB
+webgateway_conf_file: /etc/httpd/conf.d/webgateway.conf
+
+# chmod permissions - leaving off the leading zero will likely have unexpected results.
+tc_directory_mode: "0775"
+tc_file_mode: "0664"
+tc_database_mode: "0660"
+
+# RedHat NFS service name
+nfs_service: nfs

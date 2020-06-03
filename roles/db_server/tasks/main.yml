@@ -1,0 +1,58 @@
+---
+### Main Task:  Setup DB Server ###
+### Filename:   /roles/tc_dbserver/tasks/main.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- debug: msg="Start tc_dbserver install"
+
+# Configure NFS servers
+- include: configure-nfs-db.yml
+  when: os_setup_nfs
+
+# Transfer installer
+- include: transfer-iris-installer.yml
+
+# Prepare OS for Iris
+- include: prepare-iris.yml
+
+### Install Iris ###
+# Check if Iris sinstalled
+- name: check if Iris cpf file exists
+  stat: path="{{ iris_install_target_path }}/iris.cpf"
+  register: iris_cpf
+- debug: msg="File {{ iris_install_target_path }}/iris.cpf"
+
+# Install Iris
+- include: install-iris-silent.yml
+  when: iris_cpf.stat.exists == false
+
+# Transfer TrakCare
+- include: transfer-trakcare-installer.yml
+
+# Do we require to deploy TrakCare?
+- name: check if default.htm file exists
+  stat: path="{{ path_to_trak_web }}/index.htm"
+  register: trak_default_htm
+
+# Deploy TrakCare
+- include: deploy-trakcare.yml
+  when: trak_default_htm.stat.exists == false or tc_redeploy
+
+# Tuning for Iris instance
+# Some of this bit could be replaced by the Installer Manifest for IRIS
+- include: tuning-iris.yml
+
+# Add System Manager *.*.*.* to Iris installation CSP Gateway CSP.ini
+- name: add System_Manager *.*.*.* to Iris CSP.ini
+  lineinfile:
+    dest: "{{ iris_install_target_path }}/csp/bin/CSP.ini"
+    regexp: '^System_Manager=*'
+    insertafter: '\[SYSTEM\]'
+    line: 'System_Manager=*.*.*.*'
+    state: present
+    backup: yes
+
+# Include Red Hat SELinux Configuration
+- include: configure-SELinux-tc.yml
+  when: os_disable_selinux == false

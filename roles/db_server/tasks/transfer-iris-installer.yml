@@ -1,0 +1,10 @@
+## Transfer Iris installer
+### Filename:   /roles/db_server/tasks/transfer-iris-installer.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- name: Extract the IRIS installer
+  unarchive:
+    src: "/opt/installers/{{ iris_install_kit_filename }}"
+    dest: "{{ path_to_install }}"
+    creates: "{{ path_to_install }}/{{ iris_version }}{{ iris_minor_version }}"

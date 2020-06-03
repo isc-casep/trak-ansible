@@ -1,0 +1,14 @@
+# Display URLs
+- name: display urls
+  vars:
+    msg: |
+      Management Portal:
+        http://{{ ansible_hostname }}/csp/sys/UtilHome.csp
+        http://{{ ansible_hostname }}:{{ iris_webserver_port }}/csp/sys/UtilHome.csp
+      CSP Gateway:
+        http://{{ ansible_hostname }}/csp/bin/Systems/Module.cxw
+        http://{{ ansible_hostname }}:{{iris_webserver_port }}/csp/bin/Systems/Module.cxw
+      TrakCare:
+        http://{{ ansible_hostname }}{{ url_to_trak }}
+  debug:
+    msg: "{{ msg.split('\n') }}"

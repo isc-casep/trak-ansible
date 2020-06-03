@@ -1,0 +1,106 @@
+---
+### Firewall configuration ###
+### Filename:   /roles/os_common/tasks/configure-Firewall.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- debug: msg="Configure firewall for {{ os_firewall_zone }} zone and interface {{ ansible_default_ipv4.interface }}"
+
+# Configure network interface zone
+- name: configure network interface zone
+  firewalld:
+    zone: "{{ os_firewall_zone }}"
+    interface: "{{ ansible_default_ipv4.interface }}"
+    permanent: true
+    state: enabled
+
+# The firewalld module is not working so run this command to change the default interface to the internal zone
+- name: configure network interface zone 2
+  command: firewall-cmd --permanent --zone={{ os_firewall_zone }} --change-interface={{ ansible_default_ipv4.interface }}
+
+# Configure firewall service rules
+- name: allow https access
+  firewalld:
+    service: https
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: allow http access
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+
+# Configure firewall port rules
+- name: configure superserver port firewall rule
+  firewalld:
+    port: "{{ iris_superserver_port }}/tcp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure webserver port firewall rule
+  firewalld:
+    port: "{{ iris_webserver_port }}/tcp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure iscagent port firewall rule
+  firewalld:
+    port: "{{ iris_iscagent_port }}/tcp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure licserver port firewall rule
+  firewalld:
+    port: "{{ iris_licserver_port }}/udp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure NFS port firewall rule
+  firewalld:
+    port: "111/tcp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure NFS port firewall rule
+  firewalld:
+    port: "111/udp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure NFS port firewall rule
+  firewalld:
+    port: "2049/tcp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure NFS port firewall rule
+  firewalld:
+    port: "2049/udp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure NFS port firewall rule
+  firewalld:
+    port: "20048/tcp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+- name: configure NFS port firewall rule
+  firewalld:
+    port: "20048/udp"
+    permanent: true
+    state: enabled
+    zone: "{{ os_firewall_zone }}"
+
+- name: ensure firewall is running and enabled for server restart
+  systemd:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: restart firewall
+  systemd:
+    name: firewalld
+    state: restarted

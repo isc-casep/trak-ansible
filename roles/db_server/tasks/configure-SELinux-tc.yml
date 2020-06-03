@@ -1,0 +1,54 @@
+---
+### Configure SELinux for Red Hat OS ###
+### Filename:   /roles/db_server/tasks/configure-SELinux-tc.yml
+### Author:     Carlos Sepulveda
+### Now using ansible commands instead of OS-specific ones
+
+- name: configure SELinux TC
+  debug: msg="configure-SELinux-tc.yml"
+
+- name: Allow apache to modify Trak TC
+  sefcontext:
+    target: '{{ path_to_trak_tc }}(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+- name: Apply new SELinux file context to Trak TC
+  command: restorecon -irv "{{ path_to_trak_tc }}/"
+
+- name: Allow apache to modify Trak Web
+  sefcontext:
+    target: '{{ path_to_trak_web }}(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+- name: Apply new SELinux file context to Trak Web
+  command: restorecon -irv "{{ path_to_trak_web }}/"
+
+- name: Allow apache to modify Trak Perforce
+  sefcontext:
+    target: '{{ path_to_trak_perforce }}(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+- name: Apply new SELinux file context to Trak Perforce
+  command: restorecon -irv "{{ path_to_trak_perforce }}/"
+
+- name: Allow apache to modify Trak Store
+  sefcontext:
+    target: '{{ path_to_trak_store }}(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+- name: Apply new SELinux file context to Trak Store
+  command: restorecon -irv "{{ path_to_trak_store }}/"
+
+# Configure the SELinux boolean allowing httpd to establish network connections
+- name: allow Apache/Iris communication
+  seport:
+    ports: "{{ iris_superserver_port }}"
+    proto: tcp
+    setype: http_port_t
+    state: present
+
+- name: Set httpd_can_network_connect flag on and keep it persistent across reboots
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes

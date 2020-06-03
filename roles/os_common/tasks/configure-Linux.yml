@@ -1,0 +1,157 @@
+---
+### General Linux Configuration  ###
+### Filename:   /roles/os_common/tasks/configure-Linux.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+# Install yum utils
+- name: install package yum-utils
+  yum:
+    name: yum-utils
+    state: present
+
+# Download from the closest mirror (mostly for CentOS deployments)
+- name: install package yum-plugin-fastestmirror
+  yum:
+    name: yum-plugin-fastestmirror
+    state: present
+
+# DeltaRPM to reduce download requirements
+- name: install package deltarpm
+  yum:
+    name: deltarpm
+    state: present
+
+# Big upgrade
+- name: upgrade all packages
+  yum:
+    name: "*"
+    state: latest
+
+# Install SELinux packages
+- name: install package policycoreutils-python for SELinux management
+  yum:
+    name: policycoreutils-python
+    state: present
+- name: install package policycoreutils-devel for SELinux management
+  yum:
+    name: policycoreutils-devel
+    state: present
+
+- name: install basic networking tools
+  yum:
+    name: net-tools
+    state: present
+
+- name: install package setroubleshoot-server for SELinux troubleshooting
+  yum:
+    name: setroubleshoot-server
+    state: present
+
+# Install unzip for unzipping TrakCare
+- name: install package unzip
+  yum:
+    name: unzip
+    state: present
+
+# Install mod_ssl package
+- name: install package mod_ssl
+  yum:
+    name: mod_ssl
+    state: present
+
+- name: install nmap
+  yum:
+    name: nmap
+    state: present
+
+# Enable chronyd to start on server restart
+- name: enable chronyd service
+  systemd:
+    name: chronyd
+    enabled: yes
+    masked: no
+
+# Install optional packages because I like using these :)
+- name: install package tree
+  yum:
+    name: tree
+    state: present
+
+- name: install package nano
+  yum:
+    name: nano
+    state: present
+
+- name: install package vim
+  yum:
+    name: vim
+    state: present
+
+- name: install package NFS utilities
+  yum:
+    name: nfs-utils
+    state: present
+  when: os_setup_nfs
+
+# Set /etc/sysctl.conf kernel parameters
+- name: set sysctl vm.swappiness
+  sysctl:
+    name: vm.swappiness
+    value: '{{ os_swappiness |int }}'
+    state: present
+- name: set sysctl vm.dirty_background_ratio
+  sysctl:
+    name: vm.dirty_background_ratio
+    value: '{{ os_dirty_background_ratio |int }}'
+    state: present
+- name: set sysctl vm.dirty_ratio
+  sysctl:
+    name: vm.dirty_ratio
+    value: '{{ os_dirty_ratio |int }}'
+    state: present
+
+# set huge pages
+- name: set huge pages '{{ db_huge_pages_GB }}'GB
+  sysctl:
+    name: vm.nr_hugepages
+    value: '{{ (db_huge_pages_GB * 1024 * 1024 / os_huge_page_size_KB)|round|int }}'
+    state: present
+    reload: yes
+  when: server_type != "web_server"
+
+# Create OS groups
+- name: create group irisgrp - effective group for HealthShare processes.
+  group:
+    name: '{{ os_irisgrp }}'
+
+- name: create group irismgr - group allowed to start and stop instance.
+  group:
+    name: '{{ os_irismgrgrp }}'
+
+# Create OS users
+- name: create user irisusr - effective user for HealthShare SuperServer.
+  user:
+    name: '{{ os_irisusr }}'
+    group: '{{ os_irisgrp }}'
+
+- name: create user irisowner - user who owns instance.
+  user:
+    name: '{{ os_irismgrusr }}'
+    group: '{{ os_irismgrgrp }}'
+
+- name: create user irisbackup - user to be used for backup
+  user:
+    name: '{{ os_irisbackupusr }}'
+    group: '{{ os_irismgrgrp }}'
+
+# Remove OS user groups if created because they are not needed.
+- name: remove irisusr group if created when user was added
+  group:
+    name: '{{ os_irisusr }}'
+    state: absent
+
+- name: remove irisowner group if created when user was added
+  group:
+    name: '{{ os_irismgrusr }}'
+    state: absent

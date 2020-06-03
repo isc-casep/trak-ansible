@@ -1,0 +1,94 @@
+---
+### START HERE - before running playbook update these variables ###
+
+# Variables defined in /group_vars/all/ are available for all playbooks.
+
+# Flag to easily decide to run or bypass Iris and TrakCare configuration
+run_installer: 1
+
+# OS superuser administrator
+os_adminuser: root
+
+# OS username with sudo privileges
+os_sudouser: deployment
+os_sudogroup: deployment
+
+# URL Protocol
+os_url_protocol: http
+
+# SELinux and Firewall are enabled by default. Disable here while testing.
+os_disable_selinux: no
+os_disable_firewalld: no
+
+# Flag for NFS configuration
+os_setup_nfs: true
+
+# To fix high system time on RHEL7 this is added to /etc/profile TZ=EST5EDT
+os_rhtimezone: TZ=Europe/London
+
+# Database Server Huge Pages (GB)
+# e.g. 4GB will equal 2048 huge pages (4GB/2048KB),  Huge pages are 2MB on RHEL Intel
+# e.g. 12GB will equal 6144 huge pages (12GB/2048KB),  Huge pages are 2MB on RHEL Intel
+# e.g. 24GB will equal 12288 huge pages (24GB/2048KB),  Huge pages are 2MB on RHEL Intel
+# Huge pages must be greater than total shared memory (routine + global buffers + GMHEAP + lock table)
+db_huge_pages_GB: 1
+
+# ntp hostname
+os_ntp_servers:  [0.centos.pool.ntp.org, 1.centos.pool.ntp.org]
+
+# Firewall zone
+os_firewall_zone: public
+
+# HealthShare port numbers - used for all instances.
+iris_superserver_port: 51773
+iris_webserver_port: 52773
+iris_iscagent_port: 2188
+iris_licserver_port: 4002
+
+# TrakCare environment variables
+tc_site: enxx
+tc_env: cfg
+tc_server_code: tc
+
+# fqdn for TC db server to configure Web Gateway connection
+# Is there a different way to capture this?
+# how to setup mirror?
+tc_db_server: db01
+
+# fqdn VIP used for NFS
+tc_vip_server: db01
+
+# Flag to re-deploy TrakCare
+tc_redeploy: no
+
+# Note - always leave off trailing slash when defining directories.
+# TrakCare application directories
+path_to_trak_root: /trak
+path_to_trak: "{{ path_to_trak_root }}/{{ tc_site }}{{ tc_env }}"
+path_to_trak_tc: "{{ path_to_trak }}/{{ tc_server_code }}"
+path_to_trak_db: "{{ path_to_trak_tc }}/db"
+path_to_trak_iris: "{{ path_to_trak_tc }}/iris"
+path_to_trak_jrnalt: "{{ path_to_trak_tc }}/jrnalt"
+path_to_trak_jrnpri: "{{ path_to_trak_tc }}/jrnpri"
+path_to_trak_web: "{{ path_to_trak_tc }}/web"
+path_to_trak_perforce: "{{ path_to_trak_tc }}/perforce"
+path_to_trak_store: "{{ path_to_trak_tc }}/store"
+path_to_trak_wij: "{{ path_to_trak_tc }}/wij"
+url_to_trak: /trakcare
+
+# Iris details
+webgateway_installer: WebGateway-2020.1.0.215.0-lnxrhx64.tar.gz
+webgateway_version: WebGateway-2020.1.0.215.0-lnxrhx64
+# The need of version and minor is due to the difference between the
+# installer and the folder that contains
+iris_version: IRISHealth-2020.1.0.215
+iris_minor_version: .0-lnxrhx64
+iris_install_kit_filename: "{{ iris_version }}{{ iris_minor_version }}.tar.gz"
+iris_install_kit_path: "{{ path_to_install }}/{{ iris_version }}{{ iris_minor_version }}"
+iris_install_csp_kit_filename: "{{ iris_version }}-csp.tar.gz"
+trak_installer_filename: T2020_20200401_0909_R0_SYS_FULL_B14.zip
+# Default package directory
+path_to_package: "{{ path_to_trak_root }}/package"
+
+# Default install directory
+path_to_install: "{{ path_to_trak_root }}/install"

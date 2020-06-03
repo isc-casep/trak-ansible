@@ -1,0 +1,22 @@
+---
+### Configure NFS
+### https://usconfluence.iscinternal.com/display/UKS/NFS+configuration
+### Filename:   /roles/db_server/tasks/configure-nfs-db.yml
+### Author:     Carlos Sepulveda
+
+- name: add entries for each web to exports
+  lineinfile:
+    dest: /etc/exports
+    insertafter: EOF
+    line: "{{ path_to_trak_web }} {{ item }}(fsid=2,ro,async,root_squash) "
+    state: present
+    backup: yes
+  with_items:
+    - "{{ groups['web_servers'] }}"
+
+- name: ensure nfs service has selected state and enabled on boot
+  systemd:
+    name: "{{ nfs_service }}"
+    enabled: yes
+    state: started
+    masked: no

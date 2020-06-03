@@ -1,0 +1,55 @@
+---
+### Prepare OS for Iris Installation ###
+### Filename:   /roles/db_server/tasks/prepare-iris.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- debug: msg="prepare-iris.yml"
+
+# Create target directory for trakcare db directory
+- name: create db directory
+  file:
+    path: "{{ path_to_trak_db }}"
+    mode: "{{ tc_directory_mode }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    state: directory
+
+# Set ownership and permissions recursively to TrakCare database directory and files.
+- name: set TrakCare database directories owner and permissions
+  file:
+    path: "{{ path_to_trak_db }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory
+    recurse: yes
+
+# Set permissions recursively to TrakCare database files.
+- name: set TrakCare database file permissions
+  command: find {{ path_to_trak_db }} -type f -exec chmod -c {{ tc_file_mode }} {} \;
+
+# Create journal directories
+- name: create primary journal directory
+  file:
+    path: "{{ iris_jrnpri_path }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory
+
+- name: create secondary journal directory
+  file:
+    path: "{{ iris_jrnalt_path }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory
+
+- name: create wij directory
+  file:
+    path: "{{ iris_wij_path }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory

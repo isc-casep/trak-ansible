@@ -1,0 +1,10 @@
+---
+### Apache Web Server specific variables ###
+
+# Used for mpm tuning
+apache_server_limits: 20
+apache_start_servers: 10
+apache_server_max_request_workers: 500
+apache_min_spare_threads: 75
+apache_max_spare_threads: 250
+apache_threads_per_child: 25

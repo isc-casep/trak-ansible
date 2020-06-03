@@ -1,0 +1,56 @@
+---
+### Configure RedHat ###
+### Filename:   /roles/os_common/tasks/main.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+# Enable/Disable services
+- name: disable firewalld
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  when: os_disable_firewalld
+  register: firewalld
+  ignore_errors: yes
+
+# Disable SELinux permanently - used for testing only
+- name: Disable selinux (permanently)
+  selinux:
+    state: disabled
+  when: os_disable_selinux
+
+# Set SELinux to permissive - used for testing only
+- name: set selinux to permissive
+  selinux:
+    policy: targeted
+    state: permissive
+  when: os_disable_selinux
+
+# Add TZ to fix high system time problem caused when timezone is not set
+- name: set timezone
+  lineinfile:
+    dest: /etc/profile
+    insertafter: EOF
+    line: "export {{ os_rhtimezone }}"
+    backup: yes
+
+# Restart chronyd service
+- name: restart chronyd
+  systemd:
+    name: chronyd
+    state: restarted
+
+# Restart server
+- name: reboot the machine to confirm first round of changes
+  reboot:
+    reboot_timeout: 3600
+
+# Wait for server to come back
+- name: wait for server {{ ansible_hostname }} to come back online
+  wait_for:
+    port: 22
+    state: started
+    host: '{{ ansible_hostname }}'
+    delay: 30
+  delegate_to: localhost

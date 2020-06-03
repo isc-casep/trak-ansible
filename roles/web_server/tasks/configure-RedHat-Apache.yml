@@ -1,0 +1,71 @@
+---
+### Configure Apache on Red Hat ###
+### Filename:   /roles/web_server/tasks/configure-RedHat-Apache.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- name: check whether MPM Worker is set already
+  shell: grep -Fxq '#LoadModule mpm_worker_module modules/mod_mpm_worker.so' "{{ apache_modules_path }}/{{ apache_default_mpm_filename }}"
+  register: mpmset
+  failed_when: mpmset.rc != 1 and mpmset.rc != 0
+
+- name: MPM Already set?
+  debug: msg="MPM set"
+  when: mpmset.rc == 1
+
+- name: enable MPM worker comment prefork
+  lineinfile:
+    dest: "{{ apache_modules_path }}/{{ apache_default_mpm_filename }}"
+    regexp: "^LoadModule mpm_prefork_module modules/mod_mpm_prefork.so"
+    backrefs: yes
+    line: "#LoadModule mpm_prefork_module modules/mod_mpm_prefork.so"
+    backup: yes
+  when: mpmset.rc == 0
+
+# Dont backup subsequent changes
+- name: enable MPM worker uncomment mpm
+  lineinfile:
+    dest: "{{ apache_modules_path }}/{{ apache_default_mpm_filename }}"
+    regexp: "^#LoadModule mpm_worker_module modules/mod_mpm_worker.so"
+    backrefs: yes
+    line: "LoadModule mpm_worker_module modules/mod_mpm_worker.so"
+    backup: no
+  when: mpmset.rc == 0
+
+# Only add params if not set previously
+- name: add MPM worker params
+  lineinfile:
+    dest: "{{ apache_modules_path }}/{{ apache_default_mpm_filename }}"
+    insertafter: EOF
+    backup: no
+    line: "{{ item }}"
+  with_items:
+    - '# Worker MPM paramaters'
+    - 'ServerLimit         {{ apache_server_limits }}'
+    - 'StartServers        {{ apache_start_servers }}'
+    - 'MaxRequestWorkers   {{ apache_server_max_request_workers }}'
+    - 'MinSpareThreads     {{ apache_min_spare_threads }}'
+    - 'MaxSpareThreads     {{ apache_max_spare_threads }}'
+    - 'ThreadsPerChild     {{ apache_threads_per_child }}'
+  when: mpmset.rc == 0
+
+# Comment out access log CustomLog "logs/access_log" combined
+- name: comment out httpd.conf access log
+  lineinfile:
+    dest: "{{ apache_server_root }}/conf/httpd.conf"
+    regexp: '^    CustomLog "logs/access_log"'
+    line: '    # CustomLog "logs/access_log"'
+    backrefs: yes
+
+# Add apache monitoring
+- name: add apache status
+  lineinfile:
+    dest: "{{ apache_server_root }}/conf/httpd.conf"
+    insertafter: EOF
+    backup: no
+    line: "{{ item }}"
+  with_items:
+    - '# Supplemental configuration'
+    - '<Location "/server-status">'
+    - '    SetHandler server-status'
+    - '</Location>'

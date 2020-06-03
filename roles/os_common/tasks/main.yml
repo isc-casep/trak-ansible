@@ -1,0 +1,69 @@
+---
+### Main Task:  Operating System Common ###
+### Filename:   /roles/os_common/tasks/main.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- debug: msg="Start os_common role"
+
+# Determine IRIS instance name based on server type
+- name: set default iris_instance
+  set_fact:
+    iris_instance: "IRIS"
+
+- name: set iris_instance to tc
+  set_fact:
+    iris_instance: '{{ iris_instance_tc }}'
+  when: server_type == "db_server" or server_type == "web_server"
+
+- name: set iris_instance to int
+  set_fact:
+    iris_instance: '{{ iris_instance_int }}'
+  when: server_type == "int_server"
+
+- name: set iris_instance to prt
+  set_fact:
+    iris_instance: '{{ iris_instance_prt }}'
+  when: server_type == "prt_server"
+
+# To see a list of all of the facts that are available run the “setup” module as an ad-hoc action:
+# ansible -m setup hostname
+- name: Print several lines of specifications
+  vars:
+    msg: |
+         Ansible inventory name: '{{ inventory_hostname }}'
+         Current hostname: '{{ ansible_hostname }}'
+         Current nodename: '{{ ansible_nodename }}'
+         Processor Count: '{{ ansible_processor_count }}'
+         Memory in MB: '{{ ansible_memtotal_mb }}'
+         Playbook directory: '{{ playbook_dir }}'
+         Role path: '{{ role_path }}'
+         Server type: '{{ server_type }}'
+         Interface: '{{ ansible_default_ipv4.interface }}'
+         IRIS instance: '{{ iris_instance }}'
+  debug:
+    msg: "{{ msg.split('\n') }}"
+
+- command: whoami
+  register: whoami
+  changed_when: false
+
+- debug: msg='whoami={{ whoami.stdout }}'
+
+# Create target directory for installation files
+- name: create main install directory
+  file:
+    path: '{{ path_to_install }}'
+    group: '{{ os_sudogroup }}'
+    owner: '{{ os_sudouser }}'
+    mode: '{{ tc_directory_mode }}'
+    state: directory
+
+- name: Configure firewall
+  include: configure-Firewall.yml
+
+- name: Configure general linux stuff
+  include: configure-Linux.yml
+
+- name: Configure OS specific settings
+  include: configure-RedHat.yml

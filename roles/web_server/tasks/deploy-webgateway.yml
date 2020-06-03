@@ -1,0 +1,71 @@
+---
+### Main Task:  Setup Web Gateway Server ###
+### Filename:   /roles/web_server/tasks/deploy-webgateway.yml
+### Author:     Carlos Sepulveda
+
+- debug: msg="Start Web Gateway install"
+
+# "Transfer Webgateway"
+- name: Extract the Webgateway
+  unarchive:
+    src: /opt/installers/{{ webgateway_installer }}
+    dest: "{{ path_to_install }}"
+    creates: "{{ path_to_install }}/{{ webgateway_version }}/install/GatewayInstall"
+
+- name: Create empty webgateway.conf httpd file
+  file:
+    path: "{{ webgateway_conf_file }}"
+    state: touch
+    owner: "{{ apache_owner }}"
+    group: "{{ os_adminuser }}"
+    mode: "{{ tc_file_mode }}"
+
+## Starting Web Gateway installation procedure.
+##
+## Ansible expect doesn't work with RedHat 7
+## Shell+expect doesn't work with the installer
+## So echo -e and CR it is... :(
+##
+## Please select WebServer type. Choose "None" if you want to configure
+## your WebServer manually.
+## 1) Apache
+## 2) None
+## WebServer type? [2] 1
+## Please enter location of Apache configuration file [/etc/httpd/conf/httpd.conf]:
+## Enter user name used by Apache server to run its worker processes <apache>:
+## Please enter location of Apache executable file </usr/sbin/httpd>:
+## Apache version 2.4 is detected.
+## Please enter destination directory for Web Gateway files [/opt/webgateway]:
+## Please enter hostname of your InterSystems IRIS server [localhost]:
+## Please enter superserver port number for your InterSystems IRIS server [51773]:
+## Please enter InterSystems IRIS configuration name [IRIS]:
+## Please enter directory for static CSP content [/opt/webgateway/iris]:
+## Installing InterSystems IRIS Web Gateway for Apache:
+## ------------------------------------------------------------------
+## Apache configuration file: /etc/httpd/conf/webgateway.conf
+## InterSystems IRIS configuration name: IRIS
+## InterSystems IRIS server address: localhost
+## InterSystems IRIS server port number: 51773
+## Web Gateway installation directory: /opt/webgateway
+##------------------------------------------------------------------
+## Do you want to continue and perform the installation [Y]:
+
+- name: Run the Web Gateway installer
+  shell:
+    echo -e "1\n
+    {{ webgateway_conf_file }}\n
+    {{ apache_owner }}\n
+    {{ apache_daemon_path }}/{{ apache_daemon }}\n
+    {{ webgateway_opt_path }}\n
+    Y\n
+    {{ tc_db_server }}\n
+    {{ iris_superserver_port }}\n
+    {{ iris_instance }}\n
+    {{ webgateway_opt_path }}/{{ iris_instance }}\n
+    Y\n
+    Y\n"|"{{ path_to_install }}/{{ webgateway_version }}/install/GatewayInstall"
+  args:
+    chdir: "{{ path_to_install }}/{{ webgateway_version }}/install/"
+  register: installer_run
+
+- debug: var=installer_run.stdout_lines

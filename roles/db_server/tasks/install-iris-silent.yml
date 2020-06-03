@@ -1,0 +1,108 @@
+---
+### Install and Configure Iris - only supported after H2019
+### Used for installing database and application servers
+### Filename:   /roles/db_server/tasks/install-iris-silent.yml
+### Author:     Tony Pepper
+### Mantainer:  Carlos Sepulveda
+
+- debug: msg="debug={{ iris_instance }}"
+
+- name: Create empty iris.conf httpd file
+  file:
+    path: "{{ apache_conf_filename }}"
+    state: touch
+    owner: "{{ os_adminuser }}"
+    group: "{{ os_adminuser }}"
+    mode: "{{ tc_file_mode }}"
+
+- name: Iris installation parameters
+  vars:
+    msg: |
+      ISC_PACKAGE_INSTANCENAME={{ IRIS_PACKAGE_INSTANCENAME }}
+      ISC_PACKAGE_INSTALLDIR={{ IRIS_PACKAGE_INSTALLDIR }}
+      ISC_PACKAGE_UNICODE={{ IRIS_PACKAGE_UNICODE }}
+      ISC_PACKAGE_INITIAL_SECURITY={{ IRIS_PACKAGE_INITIAL_SECURITY }}
+      ISC_PACKAGE_MGRGROUP={{ IRIS_PACKAGE_MGRGROUP }}
+      ISC_PACKAGE_MGRUSER={{ IRIS_PACKAGE_MGRUSER }}
+      ISC_PACKAGE_IRISGROUP={{ IRIS_PACKAGE_IRISGROUP }}
+      ISC_PACKAGE_IRISUSER={{ IRIS_PACKAGE_IRISUSER }}
+      ISC_PACKAGE_USER_PASSWORD={{ IRIS_PACKAGE_USER_PASSWORD }}
+      ISC_PACKAGE_CSP_CONFIGURE={{ IRIS_PACKAGE_CSP_CONFIGURE }}
+      ISC_PACKAGE_CSP_SERVERTYPE={{ IRIS_PACKAGE_CSP_SERVERTYPE }}
+      ISC_PACKAGE_CSP_APACHE_CONF={{ IRIS_PACKAGE_CSP_APACHE_CONF }}
+      ISC_PACKAGE_CSP_GATEWAY_DIR={{ IRIS_PACKAGE_CSP_GATEWAY_DIR }}
+      IRIS_PACKAGE_STARTIRIS={{ IRIS_PACKAGE_STARTIRIS }}
+      ISC_INSTALLER_PARAMETERS={{ IRIS_INSTALLER_PARAMETERS }}
+      ISC_INSTALLER_LOGFILE={{ IRIS_INSTALLER_LOGFILE }}
+      ISC_INSTALLER_LOGLEVEL={{ IRIS_INSTALLER_LOGLEVEL }}
+  debug:
+    msg: "{{ msg.split('\n') }}"
+
+- name: unattended silent install of Iris
+  shell: >
+    ISC_PACKAGE_INSTANCENAME={{ IRIS_PACKAGE_INSTANCENAME }}
+    ISC_PACKAGE_INSTALLDIR={{ IRIS_PACKAGE_INSTALLDIR }}
+    ISC_PACKAGE_UNICODE={{ IRIS_PACKAGE_UNICODE }}
+    ISC_PACKAGE_INITIAL_SECURITY={{ IRIS_PACKAGE_INITIAL_SECURITY }}
+    ISC_PACKAGE_MGRGROUP={{ IRIS_PACKAGE_MGRGROUP }}
+    ISC_PACKAGE_MGRUSER={{ IRIS_PACKAGE_MGRUSER }}
+    ISC_PACKAGE_IRISGROUP={{ IRIS_PACKAGE_IRISGROUP }}
+    ISC_PACKAGE_IRISUSER={{ IRIS_PACKAGE_IRISUSER }}
+    ISC_PACKAGE_USER_PASSWORD={{ IRIS_PACKAGE_USER_PASSWORD }}
+    ISC_PACKAGE_CSP_CONFIGURE={{ IRIS_PACKAGE_CSP_CONFIGURE }}
+    ISC_PACKAGE_CSP_SERVERTYPE={{ IRIS_PACKAGE_CSP_SERVERTYPE }}
+    ISC_PACKAGE_CSP_APACHE_CONF={{ IRIS_PACKAGE_CSP_APACHE_CONF }}
+    ISC_PACKAGE_CSP_GATEWAY_DIR={{ IRIS_PACKAGE_CSP_GATEWAY_DIR }}
+    IRIS_PACKAGE_STARTIRIS={{ IRIS_PACKAGE_STARTIRIS }}
+    ISC_INSTALLER_PARAMETERS={{ IRIS_INSTALLER_PARAMETERS }}
+    ISC_INSTALLER_LOGFILE={{ IRIS_INSTALLER_LOGFILE }}
+    ISC_INSTALLER_LOGLEVEL={{ IRIS_INSTALLER_LOGLEVEL }}
+    ./irisinstall_silent
+  args:
+    chdir: "{{ iris_install_kit_path }}/"
+    creates: "{{ IRIS_PACKAGE_INSTALLDIR }}/cinstall.log"
+
+- name: Copy IRIS key
+  copy:
+    src: /opt/installers/iris.key
+    dest: "{{ iris_install_target_path }}/mgr"
+    owner: '{{ os_irismgrusr }}'
+    group: '{{ os_irismgrgrp }}'
+    mode: "{{ tc_file_mode }}"
+
+# Set Iris instance as default
+- name: set default Iris instance
+  command: "iris default {{ iris_instance }}"
+
+# Stop Iris using ccontrol for the last time
+- name: stop Iris
+  command: iris stop "{{ iris_instance }}" quietly
+
+# Configure Iris with a systemd startup script
+- name: template iris.service
+  template:
+    src: iris.service
+    dest: "/usr/lib/systemd/system/{{ iris_instance }}.service"
+
+- name: enable iris.service for server restart
+  systemd:
+    name: "{{ iris_instance }}.service"
+    state: started
+    enabled: true
+
+- name: restart Iris with systemd
+  systemd:
+    name: "{{ iris_instance }}.service"
+    state: started
+
+# Add support for Management Portal access over port 80
+- name: add support for Management Portal access over port 80
+  blockinfile:
+    dest: "{{ apache_conf_filename }}"
+    marker: "# {mark} Allow Port 80 SMP access"
+    insertafter: ^Alias /csp/*
+    content: |
+     <Location /csp>
+        SetHandler csp-handler-sa
+        CSP On
+     </Location>

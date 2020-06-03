@@ -1,0 +1,78 @@
+---
+### Perform TrakCare deployment ###
+### Filename:   /roles/db_server/tasks/deploy-trakcare.yml
+### Author:  Carlos Sepulveda
+
+- debug: msg="TrakCare deployment to Iris"
+
+- name: create auxiliary perforce folders
+  file:
+    path: "{{ path_to_trak_perforce }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory
+    recurse: yes
+
+- name: create auxiliary store folders
+  file:
+    path: "{{ path_to_trak_store }}"
+    group: "{{ os_irisgrp }}"
+    owner: "{{ os_irismgrusr }}"
+    mode: "{{ tc_directory_mode }}"
+    state: directory
+    recurse: yes
+
+- name: trakcare deployment paramaters
+  vars:
+    msg: |
+      do \$system.OBJ.Load(\""{{ path_to_install }}"/tkinstaller/tkutils.xml\",\"fc\")
+      s vars(\"APPSYS-DB\")=\"APPSYS\"
+      s vars(\"CREATEANLTNAMESPACE\")=\"1\"
+      s vars(\"DATA-DB\")=\"DATA\"
+      s vars(\"DBDIR\")=\""{{ path_to_trak_db }}\""
+      s vars(\"ENV\")=\""{{ tc_env }}\""
+      s vars(\"NAMESPACE\")=\""{{ tc_site }}-{{ tc_env }}"\"
+      s vars(\"OTHER-DB\")=\"ANALYTICS,AUDIT0,AUDIT1,CT,FACTS,HISTORYLOGS,HL7,IKNOW,LABDATA,LOCALENS,LOG0,LOG1,MONITOR,RESULTCACHE,SYSCONFIG,ZTEMP,DOCUMENT,DOCUMENT-ANNOTATE,DOCUMENT-AVI,DOCUMENT-BMP,DOCUMENT-DCM,DOCUMENT-DOC,DOCUMENT-GIF,DOCUMENT-HTM,DOCUMENT-JPG,DOCUMENT-MPG,DOCUMENT-PDF,DOCUMENT-PNG,DOCUMENT-RTF,DOCUMENT-TIF,DOCUMENT-TXT,DOCUMENT-WAV,DOCUMENT-WMA,DOCUMENT-WMV\"
+      s vars(\"OVERWRITE\")=\"1\"
+      s vars(\"RUNSECURITY\")=\"1\"
+      s vars(\"RUNUPDATEDOC\")=\"0\"
+      s vars(\"SRCDIR\")=\""{{ path_to_install }}/tkinstaller"\"
+      s vars(\"STARTNS\")=\"USER\"
+      s vars(\"TRAKDIR\")=\""{{ path_to_trak_tc }}"\"
+      s vars(\"WEBDIR\")=\""{{ path_to_trak_web }}"\"
+      s vars(\"WEBURL\")=\""{{ url_to_trak }}"\"
+      s vars(\"ANALYTICS-APPSYS\")ess =\"ANLT-APPSYS\"
+      s vars(\"ANALYTICS-CODE\")=\"ANLT\"
+      s vars(\"ANALYTICS-OTHER-DB\")=\"ANLT-ANALYTICS,ANLT-FACTS,ANLT-HISTORYLOGS,ANLT-LOCAL,ANLT-LOCALSYS,ANLTRESULTCACHE\"
+      s vars(\"ANLTWEBDIR\")=\""{{ path_to_trak_web }}"\"
+      s vars(\"ANLTWEBURL\")=\""{{ url_to_trak }}analytics"\"
+  debug:
+    msg: "{{ msg.split('\n') }}"
+
+- name: trakcare deployment to Iris
+  shell :
+    echo -e "superuser\n"{{ smp_passwd }}"\n
+    do \$system.OBJ.Load(\""{{ path_to_install }}"/tkinstaller/tkutils.xml\",\"fc\")\n
+    s vars(\"APPSYS-DB\")=\"APPSYS\"\n
+    s vars(\"CREATEANLTNAMESPACE\")=\"1\"\n
+    s vars(\"DATA-DB\")=\"DATA\"\n
+    s vars(\"DBDIR\")=\""{{ path_to_trak_db }}\""\n
+    s vars(\"ENV\")=\""{{ tc_env }}\""\n
+    s vars(\"NAMESPACE\")=\""{{ tc_site }}-{{ tc_env }}"\"\n
+    s vars(\"OTHER-DB\")=\"ANALYTICS,AUDIT0,AUDIT1,CT,FACTS,HISTORYLOGS,HL7,IKNOW,LABDATA,LOCALENS,LOG0,LOG1,MONITOR,RESULTCACHE,SYSCONFIG,ZTEMP,DOCUMENT,DOCUMENT-ANNOTATE,DOCUMENT-AVI,DOCUMENT-BMP,DOCUMENT-DCM,DOCUMENT-DOC,DOCUMENT-GIF,DOCUMENT-HTM,DOCUMENT-JPG,DOCUMENT-MPG,DOCUMENT-PDF,DOCUMENT-PNG,DOCUMENT-RTF,DOCUMENT-TIF,DOCUMENT-TXT,DOCUMENT-WAV,DOCUMENT-WMA,DOCUMENT-WMV\"\n
+    s vars(\"OVERWRITE\")=\"1\"\n
+    s vars(\"RUNSECURITY\")=\"1\"\n
+    s vars(\"RUNUPDATEDOC\")=\"0\"\n
+    s vars(\"SRCDIR\")=\""{{ path_to_install }}/tkinstaller"\"\n
+    s vars(\"STARTNS\")=\"USER\"\n
+    s vars(\"TRAKDIR\")=\""{{ path_to_trak_tc }}"\"\n
+    s vars(\"WEBDIR\")=\""{{ path_to_trak_web }}"\"\n
+    s vars(\"WEBURL\")=\""{{ url_to_trak }}"\"\n
+    s vars(\"ANALYTICS-APPSYS\")=\"ANLT-APPSYS\"\n
+    s vars(\"ANALYTICS-CODE\")=\"anlt\"\n
+    s vars(\"ANALYTICS-OTHER-DB\")=\"ANLT-ANALYTICS,ANLT-FACTS,ANLT-HISTORYLOGS,ANLT-LOCAL,ANLT-LOCALSYS,ANLTRESULTCACHE\"\n
+    s vars(\"ANLTWEBDIR\")=\""{{ path_to_trak_web }}"\"\n
+    s vars(\"ANLTWEBURL\")=\""{{ url_to_trak }}analytics"\"\n
+    do setup^tkutils(.vars)\nY\n
+    h\n"|runuser -l "{{ os_irismgrusr }}" -c "iris session "{{ iris_instance }}" -U USER"
