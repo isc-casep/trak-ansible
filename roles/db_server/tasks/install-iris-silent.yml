@@ -64,7 +64,7 @@
 
 - name: Copy IRIS key
   copy:
-    src: {{ local_installers_path }}/iris.key
+    src: "{{ local_installers_path }}/iris.key"
     dest: "{{ iris_install_target_path }}/mgr"
     owner: '{{ os_irismgrusr }}'
     group: '{{ os_irismgrgrp }}'

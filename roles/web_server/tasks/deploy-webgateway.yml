@@ -8,7 +8,7 @@
 # "Transfer Webgateway"
 - name: Extract the Webgateway
   unarchive:
-    src: {{ local_installers_path }}/{{ webgateway_installer }}
+    src: "{{ local_installers_path }}/{{ webgateway_installer }}"
     dest: "{{ path_to_install }}"
     creates: "{{ path_to_install }}/{{ webgateway_version }}/install/GatewayInstall"
 
