@@ -27,7 +27,7 @@ git clone git@github.com:isc-casep/trak-ansible.git
 ```
  ansible-playbook site.yml
 ```
-*remember to have ssh key base authentication beforehand*
+*remember to have ssh key based authentication enabled beforehand*
 
 # Preparation for nodes
 
