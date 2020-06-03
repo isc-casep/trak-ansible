@@ -5,6 +5,6 @@
 
 - name: Extract the IRIS installer
   unarchive:
-    src: "/opt/installers/{{ iris_install_kit_filename }}"
+    src: "{{ local_installers_path }}/{{ iris_install_kit_filename }}"
     dest: "{{ path_to_install }}"
     creates: "{{ path_to_install }}/{{ iris_version }}{{ iris_minor_version }}"

@@ -10,7 +10,7 @@
 
 - name: Extract the TrakCare installer
   unarchive:
-    src: "/opt/installers/{{ trak_installer_filename }}"
+    src: "{{ local_installers_path }}/{{ trak_installer_filename }}"
     dest: "{{ path_to_install }}/tkinstaller"
     creates: "{{ path_to_install }}/tkinstaller/tkutils.xml"
     group: "{{ os_irisgrp }}"

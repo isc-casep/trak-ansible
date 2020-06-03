@@ -76,6 +76,9 @@ path_to_trak_store: "{{ path_to_trak_tc }}/store"
 path_to_trak_wij: "{{ path_to_trak_tc }}/wij"
 url_to_trak: /trakcare
 
+# local source for installers
+local_installers_path: /opt/installers
+
 # Iris details
 webgateway_installer: WebGateway-2020.1.0.215.0-lnxrhx64.tar.gz
 webgateway_version: WebGateway-2020.1.0.215.0-lnxrhx64
