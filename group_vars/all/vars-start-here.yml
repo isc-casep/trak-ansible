@@ -85,6 +85,8 @@ webgateway_version: WebGateway-2020.1.0.215.0-lnxrhx64
 # The need of version and minor is due to the difference between the
 # installer and the folder that contains
 iris_version: IRISHealth-2020.1.0.215
+# The "minor version" is required due to the difference between the name and
+# the contents of the file with the installer
 iris_minor_version: .0-lnxrhx64
 iris_install_kit_filename: "{{ iris_version }}{{ iris_minor_version }}.tar.gz"
 iris_install_kit_path: "{{ path_to_install }}/{{ iris_version }}{{ iris_minor_version }}"
