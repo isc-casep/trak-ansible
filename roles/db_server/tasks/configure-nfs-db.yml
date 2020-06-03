@@ -20,3 +20,6 @@
     enabled: yes
     state: started
     masked: no
+
+- name: export the mounting
+  shell: exportfs -a
