@@ -15,3 +15,4 @@
 
 - name: mount external nfs resources
   shell: mount -a
+  when: server_type == "web_server"
