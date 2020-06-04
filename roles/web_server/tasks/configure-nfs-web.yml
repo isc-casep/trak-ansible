@@ -11,6 +11,7 @@
     line: "{{ tc_vip_server }}:{{ path_to_trak_web }} {{ path_to_trak_web }} nfs context=\"system_u:object_r:httpd_sys_content_t:s0\",bg,nfsvers=3,udp,intr 0 0"
     state: present
     backup: yes
+  when: server_type = "web_server"
 
 - name: mount external nfs resources
   shell: mount -a
