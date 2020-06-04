@@ -56,3 +56,10 @@
 # Include Red Hat SELinux Configuration
 - include: configure-SELinux-tc.yml
   when: os_disable_selinux == false
+
+# Perform cleanup of everything on {{ path_to_install }}
+- name: remove the contents of no longer required installers
+  file:
+    path: "{{ path_to_install }}"
+    state: absent
+  when: cleanup_installers

@@ -97,3 +97,6 @@ path_to_package: "{{ path_to_trak_root }}/package"
 
 # Default install directory
 path_to_install: "{{ path_to_trak_root }}/install"
+
+# Perform cleanup of installers on web_servers
+cleanup_installers: true
