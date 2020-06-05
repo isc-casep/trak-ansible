@@ -39,6 +39,7 @@
          Playbook directory: '{{ playbook_dir }}'
          Role path: '{{ role_path }}'
          Server type: '{{ server_type }}'
+         Interface: '{{ ansible_default_ipv4.interface }}'         
          IRIS instance: '{{ iris_instance }}'
   debug:
     msg: "{{ msg.split('\n') }}"
