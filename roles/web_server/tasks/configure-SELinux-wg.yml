@@ -8,28 +8,28 @@
   debug: msg="configure-SELinux-wg.yml"
 
 # Configure SELinux to allow httpd read/write the following CSP Gateway files
-- name: Allow apache to modify CSP.ini
+- name: allow apache to modify CSP.ini
   sefcontext:
     target: '{{ webgateway_opt_path }}/bin/CSP.ini'
     setype: httpd_sys_rw_content_t
     state: present
-- name: Apply new SELinux file context to CSP.ini
+- name: apply new SELinux file context to CSP.ini
   command: restorecon -irv {{ webgateway_opt_path }}/bin/CSP.ini
 
-- name: Allow apache to modify CSPPRT.ini
+- name: allow apache to modify CSPPRT.ini
   sefcontext:
     target: '{{ webgateway_opt_path }}/bin/CSPPRT.ini'
     setype: httpd_sys_rw_content_t
     state: present
-- name: Apply new SELinux file context to CSP.ini
+- name: apply new SELinux file context to CSPPRT.ini
   command: restorecon -irv {{ webgateway_opt_path }}/bin/CSPPRT.ini
 
-- name: Allow apache to modify CSP.log
+- name: allow apache to modify CSP.log
   sefcontext:
     target: '{{ webgateway_opt_path }}/bin/CSP.log'
     setype: httpd_sys_rw_content_t
     state: present
-- name: Apply new SELinux file context to CSP.ini
+- name: apply new SELinux file context to CSP.log
   command: restorecon -irv {{ webgateway_opt_path }}/bin/CSP.log
 
 - name: Allow apache to modify Trak Web
