@@ -14,10 +14,6 @@
     permanent: true
     state: enabled
 
-# The firewalld module is not working so run this command to change the default interface to the internal zone
-- name: configure network interface zone 2
-  command: firewall-cmd --permanent --zone={{ os_firewall_zone }} --change-interface={{ ansible_default_ipv4.interface }}
-
 # Configure firewall service rules
 - name: allow https access
   firewalld:

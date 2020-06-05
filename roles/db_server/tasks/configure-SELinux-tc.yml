@@ -7,36 +7,36 @@
 - name: configure SELinux TC
   debug: msg="configure-SELinux-tc.yml"
 
-- name: Allow apache to modify Trak TC
+- name: allow apache to modify Trak TC
   sefcontext:
     target: '{{ path_to_trak_tc }}(/.*)?'
     setype: httpd_sys_rw_content_t
     state: present
-- name: Apply new SELinux file context to Trak TC
+- name: apply new SELinux file context to Trak TC
   command: restorecon -irv "{{ path_to_trak_tc }}/"
 
-- name: Allow apache to modify Trak Web
+- name: allow apache to modify Trak Web
   sefcontext:
     target: '{{ path_to_trak_web }}(/.*)?'
     setype: httpd_sys_rw_content_t
     state: present
-- name: Apply new SELinux file context to Trak Web
+- name: apply new SELinux file context to Trak Web
   command: restorecon -irv "{{ path_to_trak_web }}/"
 
-- name: Allow apache to modify Trak Perforce
+- name: allow apache to modify Trak Perforce
   sefcontext:
     target: '{{ path_to_trak_perforce }}(/.*)?'
     setype: httpd_sys_rw_content_t
     state: present
-- name: Apply new SELinux file context to Trak Perforce
+- name: apply new SELinux file context to Trak Perforce
   command: restorecon -irv "{{ path_to_trak_perforce }}/"
 
-- name: Allow apache to modify Trak Store
+- name: allow apache to modify Trak Store
   sefcontext:
     target: '{{ path_to_trak_store }}(/.*)?'
     setype: httpd_sys_rw_content_t
     state: present
-- name: Apply new SELinux file context to Trak Store
+- name: apply new SELinux file context to Trak Store
   command: restorecon -irv "{{ path_to_trak_store }}/"
 
 # Configure the SELinux boolean allowing httpd to establish network connections
