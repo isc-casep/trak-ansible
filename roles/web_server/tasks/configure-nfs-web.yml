@@ -22,6 +22,6 @@
     path: "{{ path_to_trak_web }}"
     src: "{{ tc_vip_server }}:{{ path_to_trak_web }}"
     fstype: nfs
-    opts: context=\"system_u:object_r:httpd_sys_content_t:s0\",bg,nfsvers=3,udp,intr
+    opts: context="system_u:object_r:httpd_sys_content_t:s0",bg,nfsvers=3,udp,intr
     state: mounted
   when: server_type == "web_server"
