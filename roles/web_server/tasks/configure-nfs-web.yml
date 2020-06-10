@@ -4,15 +4,24 @@
 ### Filename:   /roles/web_server/tasks/configure-nfs-web.yml
 ### Author:     Carlos Sepulveda
 
-- name: add entries for fstab
-  lineinfile:
-    dest: /etc/fstab
-    insertafter: EOF
-    line: "{{ tc_vip_server }}:{{ path_to_trak_web }} {{ path_to_trak_web }} nfs context=\"system_u:object_r:httpd_sys_content_t:s0\",bg,nfsvers=3,udp,intr 0 0"
-    state: present
-    backup: yes
-  when: server_type == "web_server"
+#- name: add entries for fstab
+#  lineinfile:
+#    dest: /etc/fstab
+#    insertafter: EOF
+#    line: "{{ tc_vip_server }}:{{ path_to_trak_web }} {{ path_to_trak_web }} nfs context=\"system_u:object_r:httpd_sys_content_t:s0\",bg,nfsvers=3,udp,intr 0 0"
+#    state: present
+#    backup: yes
+#  when: server_type == "web_server"
+#
+#- name: mount external nfs resources
+#  shell: mount -a
+#  when: server_type == "web_server"
 
-- name: mount external nfs resources
-  shell: mount -a
+- name: mount remote nfs web resources
+  mount:
+    path: {{ path_to_trak_web }}
+    src: {{ tc_vip_server }}:{{ path_to_trak_web }}
+    fstype: nfs
+    opts: context=\"system_u:object_r:httpd_sys_content_t:s0\",bg,nfsvers=3,udp,intr
+    state: mounted
   when: server_type == "web_server"
