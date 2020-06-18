@@ -4,45 +4,18 @@
 ### Author:    Carlos Sepulveda
 ### So many lines added, maybe good idea to replace with template...
 
-# Add System Manager *.*.*.* to CSP.ini
-- name: add System_Manager *.*.*.* to CSP.ini
-  lineinfile:
-    dest: "{{ webgateway_opt_path }}/bin/CSP.ini"
-    insertafter: EOF
-    line: "{{ item }}"
-    state: present
-    backup: yes
-  with_items:
-    - ' '
-    - '[SYSTEM]'
-    - 'System_Manager=*.*.*.*'
-    - 'No_Activity_Timeout=1800'
+# Restart Apache to initialise /opt/webgateway/bin/CSP.ini file
+- name: restart Apache to initialise Web Gateway
+  systemd:
+    name: "{{ apache_service }}"
+    state: restarted
 
 # Horrible hack to me! I think this works...
 - name: generate the passwd
   shell: echo -n "{{ smp_passwd }}" | base64
   register: csp_passwd
 
-# Add Authentication for CSP pages
-- name: add Authentication for CSP pages User
-  lineinfile:
+- name: template CSP.ini conf file out to web server
+  template:
+    src: "{{ webgateway_conf_template }}"
     dest: "{{ webgateway_opt_path }}/bin/CSP.ini"
-    insertafter: '\[{{ iris_instance |upper }}\]'
-    state: present
-    backup: yes
-    line: "{{ item }}"
-  with_items:
-    - 'Username=CSPSystem'
-    - 'Password=]]]{{ csp_passwd.stdout }}'
-    - 'Connection_Security_Level=0'
-    - 'Product=2'
-    - 'SSLCC_Protocol=48@'
-    - 'SSLCC_Key_Type=2'
-    - 'SSLCC_Cipher_Suites=ALL:!aNULL:!eNULL:!EXP:!SSLv2'
-    - 'Timeout_All_Connections=Enabled'
-
-# Restart Apache to initialise /opt/webgateway/bin/CSP.ini file
-- name: restart Apache to initialise Web Gateway
-  systemd:
-    name: httpd
-    state: restarted

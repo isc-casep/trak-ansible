@@ -1,0 +1,28 @@
+---
+### Variables fro WebGateway tuning ###
+
+system_manager: '*.*.*.*'
+no_activity_timeout: 1800
+username_webgateway: CSPGwAdmin
+password_webgateway: "{{ smp_passwd }}"
+server_response_timeout: 60
+queued_request_timeout: 60
+instance_host_name: "{{ ansible_hostname }}"
+max_connections: 1024
+max_cache_size: 256K
+minimum_server_connections: 3
+alternative_servers: FailOver
+maximum_session_connections: 6
+web_server_id_cookie: Enabled
+sm_forms: Enabled
+timeout_all_connections: Enabled
+sm_timeout: 28800
+event_log_rotation_size: 10M
+retain_all_log_files: Enabled
+gzip_compression: Enabled
+gzip_minimum_file_size: 500
+gzip_exclude_file_types: 'jpeg gif ico png gz zip mp3 mp4 tiff'
+response_size_notification: 'Chunked Transfer Encoding and Content Length'
+response_size_notification_always: Enabled
+keepalive: Disabled
+non_parsed_headers: Enabled

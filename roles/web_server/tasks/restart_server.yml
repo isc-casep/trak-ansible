@@ -1,0 +1,12 @@
+# Restart server
+- name: reboot the machine to confirm first round of changes
+  reboot:
+    reboot_timeout: 3600
+
+- name: wait for server {{ ansible_hostname }} to come back online
+  wait_for:
+    port: 22
+    state: started
+    host: '{{ ansible_hostname }}'
+    delay: 30
+  delegate_to: localhost

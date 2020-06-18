@@ -75,13 +75,15 @@
   register: csp_ini
 - debug: msg="File {{ webgateway_opt_path }}/bin/CSP.ini"
 
+- include_vars: vars-webgateway.yml
+
 # Deploy Web Gateway.
 - include: deploy-webgateway.yml
   when: csp_ini.stat.exists == false
 
 # Check if Web Gateway is configured
 - name: check whether CSP.ini is already configured
-  shell: grep -Fxq 'System_Manager=*.*.*.*' "{{ webgateway_opt_path }}/bin/CSP.ini"
+  shell: grep -Fxq 'System_Manager={{ system_manager }}' "{{ webgateway_opt_path }}/bin/CSP.ini"
   register: cspset
   failed_when: cspset.rc != 1 and cspset.rc != 0
 
@@ -113,3 +115,7 @@
     path: "{{ path_to_install }}"
     state: absent
   when: cleanup_installers
+
+# Restart server to make sure everything is working
+# also to allow the hashing of the password to occur.
+- include: restart_server.yml

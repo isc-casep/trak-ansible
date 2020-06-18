@@ -58,6 +58,7 @@ webgateway_opt_path: /opt/webgateway
 cspgateway_csp_path: /usr/irissys
 cspgateway_dbserver: TRAKDB
 webgateway_conf_file: /etc/httpd/conf.d/webgateway.conf
+webgateway_conf_template: template_csp_ini.ini
 
 # chmod permissions - leaving off the leading zero will likely have unexpected results.
 tc_directory_mode: "0775"
