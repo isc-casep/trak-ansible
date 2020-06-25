@@ -1,6 +1,6 @@
 ---
 ### Main Task:  Setup DB Server ###
-### Filename:   /roles/tc_dbserver/tasks/main.yml
+### Filename:   /roles/db_server/tasks/main.yml
 ### Author:     Tony Pepper
 ### Mantainer:  Carlos Sepulveda
 
@@ -22,6 +22,12 @@
 # Install Iris
 - include: install-iris-silent.yml
   when: iris_cpf.stat.exists == false
+
+- name: remove previous Trak installer
+  file:
+    path: "{{ path_to_install }}/tkinstaller"
+    state: absent
+  when: tc_redeploy
 
 # Transfer TrakCare
 - include: transfer-trakcare-installer.yml
