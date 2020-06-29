@@ -1,0 +1,22 @@
+$ ansible-playbook site.yml
+...
+TASK [web_server : Set httpd_can_network_connect flag] ************************
+ok: [web02]
+ok: [web01]
+
+TASK [web_server : remove the contents of no longer required installers] ******
+changed: [web02]
+changed: [web01]
+
+TASK [web_server : reboot the machine to confirm first round of changes] ******
+changed: [web02]
+changed: [web01]
+
+TASK [web_server : wait for server web01 to come back online] *****************
+ok: [web01 -> localhost]
+ok: [web02 -> localhost]
+
+PLAY RECAP ********************************************************************
+db01  : ok=124 changed=23 unreachable=0 failed=0 skipped=35 rescued=0 ignored=0
+web01 : ok=92  changed=12 unreachable=0 failed=0 skipped=18 rescued=0 ignored=0
+web02 : ok=92  changed=12 unreachable=0 failed=0 skipped=18 rescued=0 ignored=0
