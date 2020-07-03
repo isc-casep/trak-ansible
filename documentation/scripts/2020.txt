@@ -1,0 +1,5 @@
+iris_version: IRISHealth-2020.1.0.215
+# The "minor version" is required due to the difference between the name and
+# the contents of the folder within the installer
+iris_minor_version: .0-lnxrhx64
+trak_installer_filename: T2020_20200401_0909_R0_SYS_FULL_B14.zip

@@ -60,7 +60,7 @@
 \author{Carlos ``casep'' Sepulveda \\ casep@intersystems.com}
 \date{\today}
 \title{TrakCare deployment using Ansible}
-\subtitle{Go away or I will replace you with a simple python script}
+\subtitle{Go away or I will replace you with a simple yaml script}
 
 \begin{document}
 
@@ -74,13 +74,12 @@
 \end{frame}
 
 \section{Introduction}
-\begin{frame}
+\begin{frame}[allowframebreaks]
   \frametitle{Motivation}
 
- \setcounter{MyCounter}{0}
- \begin{enumerate}[label={\arabic{MyCounter}\addtocounter{MyCounter}{1}}]
-  \item) ``Some idea why''
- \end{enumerate}
+\lstinputlisting[language=bash,caption={Extract of the old code.}]{scripts/oldcode.txt}
+
+Just impossible to keep the old code properly updated. A mess of different perl, bash, expect and similar scripts.
 
 \end{frame}
 
@@ -109,7 +108,7 @@
 \begin{frame}
   \frametitle{Simple sintax}
 
-  \lstinputlisting[language=bash,caption={Example sintax.}]
+  \lstinputlisting[language=bash,caption={Example of sintax for a task.}]
 {scripts/helloworld.yml}
 
 \end{frame}        
@@ -117,7 +116,7 @@
 \begin{frame}
   \frametitle{Simple to run}
 
-  \lstinputlisting[language=bash,caption={Example execution.}]
+  \lstinputlisting[language=bash,caption={Example of playbook execution.}]
 {scripts/ansible_run.txt}
 
 \end{frame}
@@ -125,7 +124,7 @@
 \begin{frame}
   \frametitle{Simple to debug (maybe)}
 
-  \lstinputlisting[language=bash,caption={Example execution error.}]
+  \lstinputlisting[language=bash,caption={Example of failed execution.}]
 {scripts/error.txt}
 
 \end{frame}
@@ -142,7 +141,7 @@ Intro to Playbooks\cite{intro_ansible}.
 \begin{frame}
   \frametitle{Deploying TrakCare}
 
-  \lstinputlisting[language=bash,caption={TrakCare up and running.}]
+  \lstinputlisting[language=bash,caption={TrakCare up and running!}]
 {scripts/trakcare_run.txt}
 
 \end{frame}
@@ -220,6 +219,25 @@ Grouping content by roles also allows easy sharing of roles with other users.\ci
 \lstinputlisting[language=bash,caption={Role Directory Structure.}]{scripts/roles.txt}
 
 \end{frame}
+
+\begin{frame}
+  \frametitle{TrakCare 2019}
+
+TrakCare 2019 configuration:
+
+\lstinputlisting[language=bash,caption={All the changes required for a 2019 deployment.}]{scripts/2019.txt}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TrakCare 2020}
+
+TrakCare 2020 configuration:
+
+\lstinputlisting[language=bash,caption={All the changes required for a 2020 deployment.}]{scripts/2020.txt}
+
+\end{frame}
+
 
 \section{References}
 
