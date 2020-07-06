@@ -1,0 +1,48 @@
+|-- ansible.cfg
+|-- db_server.yml
+|-- group_vars
+|   `-- all
+|       |-- vars-db_server.yml
+|       |-- vars-standard-defaults.yml
+|       `-- vars-start-here.yml
+|-- hosts
+|-- roles
+|   |-- db_server
+|   |   |-- tasks
+|   |   |   |-- configure-nfs-db.yml
+|   |   |   |-- configure-SELinux-tc.yml
+|   |   |   |-- deploy-trakcare.yml
+|   |   |   |-- install-iris-silent.yml
+|   |   |   |-- main.yml
+|   |   |   |-- transfer-iris-installer.yml
+|   |   |   |-- transfer-trakcare-installer.yml
+|   |   |   `-- tuning-iris.yml
+|   |   `-- templates
+|   |       `-- iris.service
+|   |-- os_common
+|   |   |-- tasks
+|   |   |   |-- configure-Firewall.yml
+|   |   |   |-- configure-RedHat.yml
+|   |   |   `-- main.yml
+|   |   `-- templates
+|   |       `-- rhel7.ntp.conf.j2
+|   |-- summary
+|   |   `-- tasks
+|   |       `-- main.yml
+|   `-- web_server
+|       |-- tasks
+|       |   |-- configure-nfs-web.yml
+|       |   |-- deploy-webgateway.yml
+|       |   |-- hack-webgateway.yml
+|       |   |-- install-RedHat-Apache.yml
+|       |   |-- main.yml
+|       |   `-- restart_server.yml
+|       |-- templates
+|       |   |-- template_csp_ini.ini
+|       |   `-- template_tc_nspace_alias.conf
+|       `-- vars
+|           |-- vars-mpm.yml
+|           |-- vars-RedHat-Apache.yml
+|           `-- vars-webgateway.yml
+|-- site.yml
+`-- web_server.yml

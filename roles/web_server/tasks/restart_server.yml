@@ -1,5 +1,5 @@
 # Restart server
-- name: reboot the machine to confirm first round of changes
+- name: reboot the machine to initialise web gateway
   reboot:
     reboot_timeout: 3600
 

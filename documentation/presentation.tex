@@ -1,0 +1,259 @@
+\documentclass[12pt,landscape]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usetheme{Amsterdam}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+\usepackage[nodayofweek]{datetime}
+
+\setbeamertemplate{caption}[numbered]
+\graphicspath{{images/}}
+\newcounter{MyCounter}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+\setlist[itemize,1]{label=$\times$}
+\setlist[itemize,2]{label=$\checkmark$}
+\setlist[itemize,3]{label=$\diamond$}
+\setlist[itemize,4]{label=$\bullet$}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{lightgray}{gray}{0.9}
+
+\lstset{ %
+  basicstyle=\tiny,           % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=4pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+\author{Carlos ``casep'' Sepulveda \\ casep@intersystems.com}
+\date{\today}
+\title{TrakCare deployment using Ansible}
+\subtitle{Go away or I will replace you with a simple yaml script}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plan}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\begin{frame}[allowframebreaks]
+  \frametitle{Motivation}
+
+\lstinputlisting[language=bash,caption={Extract of the old code.}]{scripts/oldcode.txt}
+
+Just impossible to keep the old code properly updated. A mess of different perl, bash, expect and similar scripts.
+
+\end{frame}
+
+\section{Background}
+
+\begin{frame}
+ \textbf{Background}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ansible?}
+  
+  ``Ansible is a radically simple IT automation engine that automates cloud provisioning, configuration management, application deployment, intra-service orchestration, and many other IT needs''\cite{ansible2}
+
+  ``...the simple, yet powerful IT automation engine that thousands of companies are using to drive complexity out of their environments and accelerate DevOps initiatives''\cite{ansible}
+          
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why Ansible?}
+  
+  ``It uses no agents and no additional custom security infrastructure, so it's easy to deploy - and most importantly, it uses a very simple language (YAML, in the form of Ansible Playbooks) that allow you to describe your automation jobs in a way that approaches plain English''\cite{ansible2}
+          
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simple sintax}
+
+  \lstinputlisting[language=bash,caption={Example of sintax for a task.}]
+{scripts/helloworld.yml}
+
+\end{frame}        
+
+\begin{frame}
+  \frametitle{Simple to run}
+
+  \lstinputlisting[language=bash,caption={Example of playbook execution.}]
+{scripts/ansible_run.txt}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simple to debug (maybe)}
+
+  \lstinputlisting[language=bash,caption={Example of failed execution.}]
+{scripts/error.txt}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Want to know more?}
+
+Intro to Playbooks\cite{intro_ansible}.
+
+\end{frame}
+
+\section{The tool}
+
+\begin{frame}
+  \frametitle{Deploying TrakCare}
+
+  \lstinputlisting[language=bash,caption={TrakCare up and running!}]
+{scripts/trakcare_run.txt}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{Components of the the project}
+
+  \lstinputlisting[language=bash,caption={Files in the project.}]{scripts/tree.txt}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{ansible.cfg}
+
+Holds the definition for your \textbf{inventory}. Ansible works against multiple managed nodes or ``hosts'' in your infrastructure at the same time, using a list or group of lists know as inventory\cite{inventory_ansible}.
+
+Also stored here, the definition for the \textbf{remote\_user}. This user is the one used to access the remote servers during deployment.
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{group\_vars}
+
+While automation exists to make it easier to make things repeatable, all systems are not exactly alike; some may require configuration that is slightly different from others. In some instances, the observed behavior or state of one system might influence how you configure other systems. 
+
+For example, you might need to find out the IP address of a system and use it as a configuration value on another system.
+
+Ansible uses variables to help deal with differences between systems\cite{variables_ansible}.
+
+A variable is defined in the format: 
+
+name\_of\_the\_variable: value
+
+And it is referenced in the script as:
+
+{{ name\_of\_the\_variable }}
+\bigskip
+
+Example of variables:
+  \lstinputlisting[language=bash,caption={Variables for a TrakCare 2019 deployment.}]
+{scripts/variables.txt}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{hosts}
+
+Here you can find the definition for the groups of servers. 
+
+Each group will have different tasks associated to it.
+
+\lstinputlisting[language=bash,caption={Example definition for hosts and groups.}]{scripts/hosts.txt}
+
+More information\cite{inventory_ansible}. 
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{site.yml}
+
+This file holds the main configuration for the site.
+
+It includes, which roles to load and which hosts to manage.
+
+More definition on importing playbooks\cite{import_playbook}.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{roles}
+
+Roles are ways of automatically loading certain vars\_files, tasks, and handlers based on a known file structure. 
+Grouping content by roles also allows easy sharing of roles with other users.\cite{import_playbook}.
+
+\lstinputlisting[language=bash,caption={Role Directory Structure.}]{scripts/roles.txt}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TrakCare 2019}
+
+TrakCare 2019 configuration:
+
+\lstinputlisting[language=bash,caption={All the changes required for a 2019 deployment.}]{scripts/2019.txt}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{TrakCare 2020}
+
+TrakCare 2020 configuration:
+
+\lstinputlisting[language=bash,caption={All the changes required for a 2020 deployment.}]{scripts/2020.txt}
+
+\end{frame}
+
+
+\section{References}
+
+\begin{frame}
+ \textbf{References}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+ \frametitle{References}
+ \bibliography{bib}
+ \bibliographystyle{plain}
+\end{frame}
+
+\begin{frame}
+  \tiny
+  Built using \LaTeX\ with \ $100\%$ recycled electrons
+\end{frame}
+
+\end{document}

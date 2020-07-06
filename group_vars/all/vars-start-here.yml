@@ -59,7 +59,7 @@ tc_db_server: db01
 tc_vip_server: db01
 
 # Flag to re-deploy TrakCare
-tc_redeploy: no
+tc_redeploy: yes
 
 # Note - always leave off trailing slash when defining directories.
 # TrakCare application directories
@@ -84,14 +84,12 @@ webgateway_installer: WebGateway-2020.1.0.215.0-lnxrhx64.tar.gz
 webgateway_version: WebGateway-2020.1.0.215.0-lnxrhx64
 # The need of version and minor is due to the difference between the
 # installer and the folder that contains
-iris_version: IRISHealth-2020.1.0.215
-# The "minor version" is required due to the difference between the name and
-# the contents of the file with the installer
-iris_minor_version: .0-lnxrhx64
+iris_version: IRISHealth-2019.1.0.510
+iris_minor_version: .4-lnxrhx64
 iris_install_kit_filename: "{{ iris_version }}{{ iris_minor_version }}.tar.gz"
 iris_install_kit_path: "{{ path_to_install }}/{{ iris_version }}{{ iris_minor_version }}"
 iris_install_csp_kit_filename: "{{ iris_version }}-csp.tar.gz"
-trak_installer_filename: T2020_20200401_0909_R0_SYS_FULL_B14.zip
+trak_installer_filename: T2019_20200110_1334_R5_SYS_FULL_B506.zip
 # Default package directory
 path_to_package: "{{ path_to_trak_root }}/package"
 

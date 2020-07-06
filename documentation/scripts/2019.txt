@@ -1,0 +1,5 @@
+iris_version: IRISHealth-2019.1.0.510
+# The "minor version" is required due to the difference between the name and
+# the contents of the folder within the installer
+iris_minor_version: .4-lnxrhx64
+trak_installer_filename: T2019_20200110_1334_R5_SYS_FULL_B506.zip
