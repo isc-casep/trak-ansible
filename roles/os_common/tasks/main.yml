@@ -39,7 +39,7 @@
          Playbook directory: '{{ playbook_dir }}'
          Role path: '{{ role_path }}'
          Server type: '{{ server_type }}'
-         Interface: '{{ ansible_default_ipv4.interface }}'         
+         Interface: '{{ ansible_default_ipv4.interface }}'
          IRIS instance: '{{ iris_instance }}'
   debug:
     msg: "{{ msg.split('\n') }}"
@@ -59,8 +59,10 @@
     mode: '{{ tc_directory_mode }}'
     state: directory
 
+# If the firewall is set to be disabled no need to run this
 - name: Configure firewall
   include: configure-Firewall.yml
+  when: os_disable_firewalld == false
 
 - name: Configure general linux stuff
   include: configure-Linux.yml

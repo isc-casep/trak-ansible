@@ -1,0 +1,30 @@
+---
+### Perform configuration of FOP server ###
+#### Filename:   /roles/db_server/tasks/fop_server.yml
+#### Author:     Carlos Sepulveda
+#
+#- debug: msg="Start fop configuration"
+#
+- name: Start fop configuration
+  shell :
+    echo -e "superuser\n"{{ smp_passwd }}"\n
+    s render=##class(%ZEN.Report.RenderServer).%New()\n
+    s render.Name=\"FOP-HotJVM\"\n
+    s render.Port=54321\n
+    s render.PingPort=12345\n
+    s render.ConfigFile=##class(%File).GetDirectory(##class(%SYS.System).GetCPFFileName())_\"fop/conf/fop.xconf\"\n
+    s render.LogFile=##class(%File).GetDirectory(##class(%SYS.System).GetCPFFileName())_\"fop/conf/fop.log\"\n
+    s render.LogFile=\"/tmp/fop.log\"\n
+    s render.LogLevel=1\n
+    s render.MaxLogFileSize=3200000\n
+    s render.NumPingThreads=10\n
+    s render.NumThreads=10\n
+    w render.%Save()\n
+    s ^%SYS(\"zenreport\",\"renderserverport\")=54321\n
+    h\n"|runuser -l "{{ os_irismgrusr }}" -c "iris session "{{ iris_instance }}" -U %SYS"
+
+# Configure fop default conf
+- name: template iris.service
+  template:
+  src: fop.conf
+  dest: "/etc/fop.conf"

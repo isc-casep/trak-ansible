@@ -1,7 +1,7 @@
 ---
 ### Iris Database Server specific variables ###
 
-# Setup variables for HealthShare silent install (./install_silent) for Database Server
+# Setup variables for IRIS silent install (./install_silent) for Database Server
 IRIS_PACKAGE_INSTANCENAME: "{{ iris_instance }}"
 IRIS_PACKAGE_INSTALLDIR: "{{ iris_install_target_path }}"
 IRIS_PACKAGE_UNICODE: Y
@@ -15,6 +15,10 @@ IRIS_PACKAGE_CSP_CONFIGURE: Y
 IRIS_PACKAGE_CSP_SERVERTYPE: Apache
 IRIS_PACKAGE_CSP_APACHE_CONF: "{{ apache_conf_filename }}"
 IRIS_PACKAGE_CSP_GATEWAY_DIR: "{{ webgateway_opt_path }}"
+IRIS_PACKAGE_WEB_CONFIGURE: Y
+IRIS_PACKAGE_WEB_SERVERTYPE: Apache
+IRIS_PACKAGE_WEB_APACHE_CONF: "{{ apache_conf_filename }}"
+IRIS_PACKAGE_WEB_GATEWAY_DIR: "{{ webgateway_opt_path }}"
 IRIS_PACKAGE_STARTIRIS: Y
 IRIS_INSTALLER_LOGFILE: installer_log
 IRIS_INSTALLER_LOGLEVEL: 3

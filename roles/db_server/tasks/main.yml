@@ -45,6 +45,9 @@
 # Some of this bit could be replaced by the Installer Manifest for IRIS
 - include: tuning-iris.yml
 
+# FOP configuration
+- include: fop_server.yml
+
 # Configure NFS servers
 - include: configure-nfs-db.yml
   when: os_setup_nfs

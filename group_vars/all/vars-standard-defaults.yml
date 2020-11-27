@@ -22,27 +22,27 @@ os_irisbackupusr: irisbackup
 
 # Default variables that will be updated dynamically in runtime
 iris_instance: iris
-tc_nspace: trak
+tc_nspace: "{{ tc_site|upper }}-{{ tc_env|upper }}"
 
 # Define Iris instance name defaults
-iris_instance_tc: "{{ tc_site }}{{ tc_env }}tc"
-iris_instance_int: "{{ tc_site }}{{ tc_env }}int"
-iris_instance_prt: "{{ tc_site }}{{ tc_env }}prt"
+iris_instance_tc: "{{ tc_site|upper }}{{ tc_env|upper }}{{ tc_version }}TC"
+iris_instance_int: "{{ tc_site|upper }}{{ tc_env|upper }}{{ tc_version }}INT"
+iris_instance_prt: "{{ tc_site|upper }}{{ tc_env|upper }}{{ tc_version }}PRT"
 
 # Iris instance target directory
-iris_install_target_path: "{{ path_to_trak_iris }}/{{ iris_instance }}"
+iris_install_target_path: "{{ path_to_trak_iris }}"
 
 # Iris journal directories
-iris_jrnpri_path: "{{ path_to_trak_jrnpri }}/{{ iris_instance }}"
-iris_jrnalt_path: "{{ path_to_trak_jrnalt }}/{{ iris_instance }}"
-iris_wij_path: "{{ path_to_trak_wij }}/{{ iris_instance }}"
+iris_jrnpri_path: "{{ path_to_trak_jrnpri }}"
+iris_jrnalt_path: "{{ path_to_trak_jrnalt }}"
+iris_wij_path: "{{ path_to_trak_wij }}"
 
 # Database property variables
 iris_db_expansionsizeMB: 1000
 iris_globals8kb: 1024
 iris_globals64kb: 64
 iris_gmheap: 1048576
-iris_locksiz: 128057344
+iris_locksiz: 268435456
 iris_routines: 0,128,0,128,0,768
 iris_DBSizesAllowed: 8192,65536
 iris_type_server: DEVELOPMENT
@@ -56,7 +56,7 @@ apache_conf_template: template_tc_nspace_alias.conf
 # CSP Gateway
 webgateway_opt_path: /opt/webgateway
 cspgateway_csp_path: /usr/irissys
-cspgateway_dbserver: TRAKDB
+cspgateway_dbserver: "{{ iris_instance_tc }}"
 webgateway_conf_file: /etc/httpd/conf.d/webgateway.conf
 webgateway_conf_template: template_csp_ini.ini
 
@@ -67,3 +67,6 @@ tc_database_mode: "0660"
 
 # RedHat NFS service name
 nfs_service: nfs
+
+#FOP memory configuration
+fop_memory: "512M"

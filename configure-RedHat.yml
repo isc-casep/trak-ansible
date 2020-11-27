@@ -35,6 +35,12 @@
     line: "export {{ os_rhtimezone }}"
     backup: yes
 
+# Restart chronyd service
+- name: restart chronyd
+  systemd:
+    name: chronyd
+    state: restarted
+
 # Restart server
 - name: reboot the machine to confirm first round of changes
   reboot:

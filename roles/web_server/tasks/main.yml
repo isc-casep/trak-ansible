@@ -83,7 +83,7 @@
 
 # Check if Web Gateway is configured
 - name: check whether CSP.ini is already configured
-  shell: grep -Fxq 'System_Manager={{ system_manager }}' "{{ webgateway_opt_path }}/bin/CSP.ini"
+  shell: grep -Fxq 'APP_PATH:{{ url_to_trak }}' "{{ webgateway_opt_path }}/bin/CSP.ini"
   register: cspset
   failed_when: cspset.rc != 1 and cspset.rc != 0
 
@@ -108,6 +108,7 @@
 
 # Configure SELinux
 - include: configure-SELinux-wg.yml
+  when: os_disable_selinux == false
 
 # Perform cleanup of everything on {{ path_to_install }}
 - name: remove the contents of no longer required installers

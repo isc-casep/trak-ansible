@@ -3,8 +3,14 @@
 ### Author:     Tony Pepper
 ### Mantainer:  Carlos Sepulveda
 
+- name: Copy file with owner and permission, using symbolic representation
+  copy:
+    src: "{{ local_installers_path }}/{{ iris_install_kit_filename }}"
+    dest: "/tmp/{{ iris_install_kit_filename }}"
+
 - name: Extract the IRIS installer
   unarchive:
-    src: "{{ local_installers_path }}/{{ iris_install_kit_filename }}"
+    src: "/tmp/{{ iris_install_kit_filename }}"
     dest: "{{ path_to_install }}"
     creates: "{{ path_to_install }}/{{ iris_version }}{{ iris_minor_version }}"
+    copy: no

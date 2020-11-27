@@ -19,3 +19,5 @@
   template:
     src: "{{ webgateway_conf_template }}"
     dest: "{{ webgateway_opt_path }}/bin/CSP.ini"
+    owner: "{{ apache_owner }}"
+    group: "{{ os_adminuser }}"

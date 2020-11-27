@@ -65,13 +65,6 @@
     name: nmap
     state: present
 
-# Enable chronyd to start on server restart
-- name: enable chronyd service
-  systemd:
-    name: chronyd
-    enabled: yes
-    masked: no
-
 # Install optional packages because I like using these :)
 - name: install package tree
   yum:
@@ -121,7 +114,7 @@
   when: server_type != "web_server"
 
 # Create OS groups
-- name: create group irisgrp - effective group for HealthShare processes.
+- name: create group irisgrp - effective group for IRIS processes.
   group:
     name: '{{ os_irisgrp }}'
 
@@ -130,7 +123,7 @@
     name: '{{ os_irismgrgrp }}'
 
 # Create OS users
-- name: create user irisusr - effective user for HealthShare SuperServer.
+- name: create user irisusr - effective user for IRIS SuperServer.
   user:
     name: '{{ os_irisusr }}'
     group: '{{ os_irisgrp }}'
