@@ -88,4 +88,3 @@
     path: "{{ path_to_install }}"
     state: directory
   when: cleanup_installers
-a
