@@ -1,0 +1,17 @@
+---
+### Download all files for dbserver install ###
+### Filename:   /roles/db_server/tasks/download-install-PMSfonts.yml
+### Author:     Carlos Sepulveda
+
+
+- name: Transfer the installer
+  copy:
+    src: "{{ local_installers_path }}/{{ pms_fonts }}"
+    dest: "{{ path_to_install }}"
+
+- name: Extract the fonts
+  unarchive:
+    src: "{{ path_to_install }}/{{ pms_fonts }}"
+    dest: "{{ linux_fonts_path }}"
+    remote_src: yes
+    creates: "{{ linux_fonts_path }}/PMSFonts/FREE3OF9.TTF"

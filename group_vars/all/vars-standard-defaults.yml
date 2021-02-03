@@ -45,7 +45,7 @@ iris_gmheap: 1048576
 iris_locksiz: 268435456
 iris_routines: 0,128,0,128,0,768
 iris_DBSizesAllowed: 8192,65536
-iris_type_server: DEVELOPMENT
+iris_type_server: LIVE
 
 # RedHat Apache Iris conf file
 apache_conf_filename: /etc/httpd/conf.d/ztrak.conf
@@ -53,7 +53,7 @@ apache_conf_nspace_filename: /etc/httpd/conf.d/ztrak_nspace.conf
 apache_conf_template: template_tc_nspace_alias.conf
 
 
-# CSP Gateway
+# Web Gateway
 webgateway_opt_path: /opt/webgateway
 cspgateway_csp_path: /usr/irissys
 cspgateway_dbserver: "{{ iris_instance_tc }}"

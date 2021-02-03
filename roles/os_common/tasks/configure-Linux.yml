@@ -37,15 +37,32 @@
   yum:
     name: policycoreutils-devel
     state: present
+- name: Install package setroubleshoot-server for SELinux troubleshooting
+  yum:
+    name: setroubleshoot-server
+    state: present
 
 - name: install basic networking tools
   yum:
     name: net-tools
     state: present
 
-- name: install package setroubleshoot-server for SELinux troubleshooting
+# Ghostscript fonts
+- name: Install Ghostscript fonts
   yum:
-    name: setroubleshoot-server
+    name: ghostscript-fonts
+    state: present
+
+# CUPS printing
+- name: Install CUPS support
+  yum:
+    name: cups
+    state: present
+
+# Install Java for FOP/jReports
+- name: install package java
+  yum:
+    name: java-1.8.0-openjdk
     state: present
 
 # Install unzip for unzipping TrakCare

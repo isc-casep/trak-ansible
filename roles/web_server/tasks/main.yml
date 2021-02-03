@@ -117,6 +117,19 @@
     state: absent
   when: cleanup_installers
 
+- name: recreates path to install
+  file:
+    path: "{{ path_to_install }}"
+    state: directory
+  when: cleanup_installers
+
+# Apache must be part of irisgrp
+- name: adding existing user "{{ apache_owner }}" to group sudo
+  user:
+    name: "{{ apache_owner }}"
+    groups: "{{ os_irisgrp }}"
+    append: yes
+
 # Restart server to make sure everything is working
 # also to allow the hashing of the password to occur.
 - include: restart_server.yml

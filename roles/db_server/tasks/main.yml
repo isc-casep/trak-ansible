@@ -12,6 +12,9 @@
 # Prepare OS for Iris
 - include: prepare-iris.yml
 
+# Fix folders permissions
+- include: fix_folders_permissions.yml
+
 ### Install Iris ###
 # Check if Iris sinstalled
 - name: check if Iris cpf file exists
@@ -62,6 +65,13 @@
     state: present
     backup: yes
 
+# FOP configuration
+- include: fop_server.yml
+
+# Everybody loves Fonts
+- include: download-install-PMSfonts.yml
+ when: deploy_pms_fonts
+
 # Include Red Hat SELinux Configuration
 - include: configure-SELinux-tc.yml
   when: os_disable_selinux == false
@@ -72,3 +82,10 @@
     path: "{{ path_to_install }}"
     state: absent
   when: cleanup_installers
+
+- name: recreate path to install
+  file:
+    path: "{{ path_to_install }}"
+    state: directory
+  when: cleanup_installers
+a

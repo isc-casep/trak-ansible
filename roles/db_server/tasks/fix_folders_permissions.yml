@@ -1,0 +1,85 @@
+---
+### Install and Configure Iris - only supported after H2019
+#### Used for installing database and application servers
+#### Filename:   /roles/db_server/tasks/install-iris-silent.yml
+#### Author:     Carlos Sepulveda
+
+- name: Fix folders permissions /trak
+  file:
+    path: "{{ path_to_trak_root }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>
+  file:
+    path: "{{ path_to_trak }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code
+  file:
+    path: "{{ path_to_trak_tc }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code/iris
+  file:
+    path: "{{ path_to_trak_iris }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code/db
+  file:
+    path: "{{ path_to_trak_db }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code/jrn/alt
+  file:
+    path: "{{ path_to_trak_jrnalt }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code/jrn/pri
+  file:
+    path: "{{ path_to_trak_jrnpri }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code/web
+  file:
+    path: "{{ path_to_trak_web }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code/perforce
+  file:
+    path: "{{ path_to_trak_perforce }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755
+
+- name: Fix folders permissions /trak/<siteenv>/tc_server_code/store
+  file:
+    path: "{{ path_to_trak_store }}"
+    owner: "{{ os_irismgrusr }}"
+    group: "{{ os_irisgrp }}"
+    state: directory
+    mode: 0755

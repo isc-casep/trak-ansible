@@ -77,6 +77,15 @@ url_to_trak: /trakcare
 # local source for installers
 local_installers_path: /opt/installers
 
+# PMS Fonts
+pms_fonts: PMSFonts.tgz
+
+# Fonts path
+linux_fonts_path: /usr/share/fonts/
+
+# Install PMS Fonts?
+deploy_pms_fonts: yes
+
 # Iris details
 webgateway_installer: WebGateway-2020.3.0.221.0-lnxrhx64.tar.gz
 webgateway_version: WebGateway-2020.3.0.221.0-lnxrhx64

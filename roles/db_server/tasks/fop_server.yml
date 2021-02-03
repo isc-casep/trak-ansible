@@ -24,7 +24,7 @@
     h\n"|runuser -l "{{ os_irismgrusr }}" -c "iris session "{{ iris_instance }}" -U %SYS"
 
 # Configure fop default conf
-- name: template iris.service
+- name: template fop config
   template:
   src: fop.conf
   dest: "/etc/fop.conf"
