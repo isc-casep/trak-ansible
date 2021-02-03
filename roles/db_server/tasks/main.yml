@@ -70,7 +70,7 @@
 
 # Everybody loves Fonts
 - include: download-install-PMSfonts.yml
- when: deploy_pms_fonts
+  when: deploy_pms_fonts
 
 # Include Red Hat SELinux Configuration
 - include: configure-SELinux-tc.yml
