@@ -9,11 +9,11 @@
 - name: Copy file because of errors with extract
   copy:
     src: "{{ local_installers_path }}/{{ webgateway_installer }}"
-    dest: "{{ local_installers_path }}/{{ webgateway_installer }}"
+    dest: "{{ path_to_install }}/{{ webgateway_installer }}"
 
 - name: Extract the Webgateway
   unarchive:
-    src: "{{ local_installers_path }}/{{ webgateway_installer }}"
+    src: "{{ path_to_install }}/{{ webgateway_installer }}"
     dest: "{{ path_to_install }}"
     creates: "{{ path_to_install }}/{{ webgateway_version }}/install/GatewayInstall"
     copy: no
