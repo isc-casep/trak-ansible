@@ -26,5 +26,5 @@
 # Configure fop default conf
 - name: template fop config
   template:
-  src: fop.conf
-  dest: "/etc/fop.conf"
+    src: fop.conf
+    dest: "/etc/fop.conf"
