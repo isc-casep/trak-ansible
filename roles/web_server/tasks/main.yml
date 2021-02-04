@@ -94,7 +94,7 @@
     state: started
     masked: no
 
-- name: CSP Already set?
+- name: Web gateway Already set?
   debug: msg="CSP set"
   when: cspset.rc == 0
 

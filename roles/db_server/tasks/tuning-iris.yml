@@ -8,7 +8,6 @@
 - name: Tuning for Iris
   shell :
     echo -e "superuser\n"{{ smp_passwd }}"\n
-    s ^%SYS(\"SystemMode\")=\""{{ iris_type_server }}"\"\n
     s prop(\"AutheEnabled\")=1136\n
     s Status=##Class(Security.System).Modify(\"AutheEnabled\",.prop)\n
     s prop(\"AutheEnabled\")=64\n
@@ -18,6 +17,7 @@
     s prop(\"AutheEnabled\")=32\n
     s Status=##Class(Security.Services).Modify(\"%Service_WebGateway\", .prop)\n
     s Status=##Class(Config.Startup).Get(.Props)\n
+    s Props(\"SystemMode\")=\""{{ iris_type_server }}"\"\n
     s Props(\"DBSizesAllowed\")=\""{{ iris_DBSizesAllowed }}"\"\n
     s Props(\"TerminalPrompt\")=\"8,3,2\"\n
     s Status=##Class(Config.Startup).Modify(.Props)\n
