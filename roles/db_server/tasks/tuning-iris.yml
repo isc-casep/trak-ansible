@@ -8,6 +8,7 @@
 - name: Tuning for Iris
   shell :
     echo -e "superuser\n"{{ smp_passwd }}"\n
+    s ^%SYS(\"SystemMode\")=\""{{ iris_type_server }}"\"\n
     s prop(\"AutheEnabled\")=1136\n
     s Status=##Class(Security.System).Modify(\"AutheEnabled\",.prop)\n
     s prop(\"AutheEnabled\")=64\n
@@ -42,5 +43,4 @@
     s Status=##Class(Config.Miscellaneous).Get(.Props)\n
     s Props(\"ShutDownLogErrors\")=1\n
     s Status=##Class(Config.Miscellaneous).Modify(.Props)\n
-    s ^%SYS(\"SystemMode\")=\""{{ iris_type_server }}"\"\n
     h\n"|runuser -l "{{ os_irismgrusr }}" -c "iris session "{{ iris_instance }}" -U %SYS"
